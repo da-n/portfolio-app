@@ -7,16 +7,16 @@ import (
 )
 
 type AccountService interface {
-	ListAccounts() ([]dto.AccountResponse, *errs.AppError)
-	GetAccount(string) (*dto.AccountResponse, *errs.AppError)
+	ListAccounts(customerId string) ([]dto.AccountResponse, *errs.AppError)
+	GetAccount(accountId string) (*dto.AccountResponse, *errs.AppError)
 }
 
 type DefaultAccountService struct {
 	repo domain.AccountRepository
 }
 
-func (service DefaultAccountService) ListAccounts() ([]dto.AccountResponse, *errs.AppError) {
-	a, err := service.repo.FindAll()
+func (service DefaultAccountService) ListAccounts(customerId string) ([]dto.AccountResponse, *errs.AppError) {
+	a, err := service.repo.FindAll(customerId)
 	if err != nil {
 		return nil, err
 	}

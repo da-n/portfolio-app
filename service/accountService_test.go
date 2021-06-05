@@ -27,10 +27,10 @@ func Test_it_should_return_an_error_when_it_cannot_list_accounts(t *testing.T) {
 	defer teardown()
 
 	// given
-	mockAccountRepo.EXPECT().FindAll().Return(nil, errs.NewUnexpectedError("Unexpected database error"))
+	mockAccountRepo.EXPECT().FindAll("1").Return(nil, errs.NewUnexpectedError("Unexpected database error"))
 
 	// when
-	_, err := accountService.ListAccounts()
+	_, err := accountService.ListAccounts("1")
 
 	// then
 	if err == nil {
@@ -59,10 +59,10 @@ func Test_it_should_return_a_slice_of_accounts(t *testing.T) {
 		},
 
 	}
-	mockAccountRepo.EXPECT().FindAll().Return(accounts, nil)
+	mockAccountRepo.EXPECT().FindAll("1").Return(accounts, nil)
 
 	// when
-	a, _ := accountService.ListAccounts()
+	a, _ := accountService.ListAccounts("1")
 
 	// then
 	if a == nil {
@@ -76,7 +76,7 @@ func Test_it_should_return_an_error_when_it_cannot_get_an_account(t *testing.T) 
 	defer teardown()
 
 	// given
-	mockAccountRepo.EXPECT().FindByAccountId("0").Return(nil, errs.NewNotFoundError("Account could not be found"))
+	mockAccountRepo.EXPECT().FindById("0").Return(nil, errs.NewNotFoundError("Account could not be found"))
 
 	// when
 	_, err := accountService.GetAccount("0")
@@ -99,7 +99,7 @@ func Test_it_should_return_an_account(t *testing.T) {
 		AccountType: appdomain.Portfolio,
 		Balance:   20000000,
 	}
-	mockAccountRepo.EXPECT().FindByAccountId("1").Return(&account, nil)
+	mockAccountRepo.EXPECT().FindById("1").Return(&account, nil)
 
 	// when
 	a, _ := accountService.GetAccount("1")
