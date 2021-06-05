@@ -9,13 +9,13 @@ import (
 )
 
 type UserHandlers struct {
-	Service service.UserService
+	service service.UserService
 }
 
 func (h UserHandlers) GetUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userId := vars["user_id"]
-	user, err := h.Service.GetUser(userId)
+	user, err := h.service.GetUser(userId)
 	if err != nil {
 		writeJsonResponse(w, err.Code, err.Message)
 	} else {
