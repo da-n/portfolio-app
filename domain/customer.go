@@ -6,7 +6,7 @@ import (
 )
 
 type Customer struct {
-	CustomerId string `db:"customer_id"`
+	CustomerId string `db:"id"`
 	FirstName  string `db:"first_name"`
 	LastName   string `db:"last_name"`
 	Email      string `db:"email"`
