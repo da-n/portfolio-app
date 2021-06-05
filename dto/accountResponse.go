@@ -1,8 +1,10 @@
 package dto
 
 type AccountResponse struct {
-	AccountId   string `json:"account_id"`
-	CustomerId  string `json:"customer_id"`
-	AccountType string `json:"account_type"`
-	Balance     string `json:"balance"`
+	AccountId   string `json:"accountId"`
+	CustomerId  string `json:"customerId"`
+	AccountType string `json:"accountType"`
+	Balance     int    `json:"balance"`
+	OpeningDate string `json:"openingDate"`
+	Status      string `json:"status"`
 }

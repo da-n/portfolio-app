@@ -9,7 +9,9 @@ type Account struct {
 	AccountId   string `db:"account_id"`
 	CustomerId  string `db:"customer_id"`
 	AccountType string `db:"account_type"`
-	Balance     string `db:"balance"`
+	Balance     int    `db:"balance"`
+	OpeningDate string `db:"opening_date"`
+	Status      string `db:"status"`
 }
 
 // ToDto takes a Account and casts it to dto.AccountResponse
@@ -19,6 +21,8 @@ func (a Account) ToDto() dto.AccountResponse {
 		CustomerId:  a.CustomerId,
 		AccountType: a.AccountType,
 		Balance:     a.Balance,
+		OpeningDate: a.OpeningDate,
+		Status:      a.Status,
 	}
 }
 
