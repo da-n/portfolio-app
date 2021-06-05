@@ -21,3 +21,6 @@ test:
 
 mocks:
 	@go generate ./...
+
+fmt:
+	@go fmt ./...

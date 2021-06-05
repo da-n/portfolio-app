@@ -47,10 +47,10 @@ func Test_it_should_return_a_customer_response_when_it_can_get_a_customer(t *tes
 	// given
 	customer := appdomain.Customer{
 		CustomerId: "1",
-		FirstName: "Theia",
-		LastName: "Parker",
-		Email: "theia@example.com",
-		Password: "password123",
+		FirstName:  "Theia",
+		LastName:   "Parker",
+		Email:      "theia@example.com",
+		Password:   "password123",
 	}
 	mockRepo.EXPECT().FindByCustomerId(customer.CustomerId).Return(&customer, nil)
 
