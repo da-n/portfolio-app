@@ -28,7 +28,7 @@ CREATE TABLE `users` (
                              `last_name` varchar(191) NOT NULL,
                              `email` varchar(191) NOT NULL,
                              `password` varchar(191) NOT NULL,
-                             PRIMARY KEY (`customer_id`)
+                             PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
 
 LOCK TABLES `users` WRITE;
