@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	"log"
+	"net/http"
 	"os"
 	"time"
 )
@@ -25,14 +26,17 @@ func Start() {
 	}
 
 	// create database repositories
-	userRepositoryDb := domain.NewUserRepositoryDb(dbClient)
+	customerRepositoryDb := domain.NewCustomerRepositoryDb(dbClient)
 
 	// create handlers
-	userHandlers := UserHandlers{service.NewUserService(userRepositoryDb)}
+	customerHandlers := CustomerHandlers{service.NewCustomerService(customerRepositoryDb)}
 
 	// routes
 	router := mux.NewRouter()
-	router.HandleFunc("/users/{user_id:[0-9]+}", userHandlers.GetUser)
+	router.HandleFunc("/customers/{customer_id:[0-9]+}", customerHandlers.GetCustomer).Methods(http.MethodGet).Name("GetCustomer")
+
+	// start server
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", os.Getenv("SERVER_ADDRESS"), os.Getenv("SERVER_PORT")), router))
 }
 
 // envCheck verify all necessary environment variables are set to run application

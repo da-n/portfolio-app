@@ -8,18 +8,18 @@ import (
 	"net/http"
 )
 
-type UserHandlers struct {
-	service service.UserService
+type CustomerHandlers struct {
+	service service.CustomerService
 }
 
-func (h UserHandlers) GetUser(w http.ResponseWriter, r *http.Request) {
+func (h CustomerHandlers) GetCustomer(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	userId := vars["user_id"]
-	user, err := h.service.GetUser(userId)
+	customerId := vars["customer_id"]
+	customer, err := h.service.GetCustomer(customerId)
 	if err != nil {
 		writeJsonResponse(w, err.Code, err.Message)
 	} else {
-		writeJsonResponse(w, http.StatusOK, user)
+		writeJsonResponse(w, http.StatusOK, customer)
 	}
 }
 

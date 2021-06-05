@@ -16,25 +16,25 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `accounts`
+-- Table structure for table `customers`
 --
 CREATE DATABASE portfolio_app;
 USE portfolio_app;
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-                             `user_id` int(11) NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `customers`;
+CREATE TABLE `customers` (
+                             `customer_id` int(11) NOT NULL AUTO_INCREMENT,
                              `first_name` varchar(191) NOT NULL,
                              `last_name` varchar(191) NOT NULL,
                              `email` varchar(191) NOT NULL,
                              `password` varchar(191) NOT NULL,
-                             PRIMARY KEY (`user_id`)
+                             PRIMARY KEY (`customer_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
 
-LOCK TABLES `users` WRITE;
+LOCK TABLES `customers` WRITE;
 
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES
+/*!40000 ALTER TABLE `customers` DISABLE KEYS */;
+INSERT INTO `customers` VALUES
 (1,'Theia','Parker','theia@example.com','password123'),
 (2,'Kaine','Berger','kaine@example.com','password123'),
 (3,'Rami','Mejia','rami@example.com','password123'),
