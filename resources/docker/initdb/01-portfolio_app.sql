@@ -23,25 +23,66 @@ USE portfolio_app;
 
 DROP TABLE IF EXISTS `customers`;
 CREATE TABLE `customers` (
-                             `customer_id` int(11) NOT NULL AUTO_INCREMENT,
-                             `first_name` varchar(191) NOT NULL,
-                             `last_name` varchar(191) NOT NULL,
-                             `email` varchar(191) NOT NULL,
-                             `password` varchar(191) NOT NULL,
-                             PRIMARY KEY (`customer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `first_name` varchar(191) NOT NULL,
+    `last_name` varchar(191) NOT NULL,
+    `email` varchar(191) NOT NULL,
+    `password` varchar(191) NOT NULL,
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 LOCK TABLES `customers` WRITE;
 
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
 INSERT INTO `customers` VALUES
-(1,'Theia','Parker','theia@example.com','password123'),
-(2,'Kaine','Berger','kaine@example.com','password123'),
-(3,'Rami','Mejia','rami@example.com','password123'),
-(4,'Junayd','Bishop','junayd@example.com','password123'),
-(5,'Alyce','Blake','alyce@example.com','password123'),
-(6,'Callum','Hussain','callum@example.com','password123');
+(1,'Theia','Parker','theia@example.com','password123','2021-05-15 10:05:15'),
+(2,'Kaine','Berger','kaine@example.com','password123','2021-05-16 11:45:17'),
+(3,'Rami','Mejia','rami@example.com','password123','2021-06-05 08:04:25');
 
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `accounts`;
+CREATE TABLE `accounts` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `customer_id` int(11) NOT NULL,
+    `account_type` varchar(10) NOT NULL DEFAULT 'portfolio',
+    `balance` bigint(20) NOT NULL,
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `accounts_FK` (`customer_id`),
+    CONSTRAINT `accounts_FK` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `accounts` WRITE;
+
+/*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
+INSERT INTO `accounts` VALUES
+(1,1,'portfolio',20000000,'2021-05-15 10:15:25'),
+(2,2,'portfolio',10000000,'2021-05-16 11:55:27'),
+(3,2,'portfolio',3000000,'2021-05-18 12:35:02'),
+(4,3,'portfolio',32000000,'2021-06-05 08:22:35');
+
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `withdrawal_requests`;
+CREATE TABLE `withdrawal_requests` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `account_id` int(11) NOT NULL,
+    `amount` bigint(20) NOT NULL,
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `withdrawal_requests_FK` (`account_id`),
+    CONSTRAINT `withdrawal_requests_FK` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `withdrawal_requests` WRITE;
+
+/*!40000 ALTER TABLE `withdrawal_requests` DISABLE KEYS */;
+INSERT INTO `withdrawal_requests` VALUES
+(1,1,2000000,'2021-05-18 12:05:15'),
+(2,2,300000,'2021-05-19 11:25:35'),
+(3,2,1400000,'2021-05-21 11:25:35');
 
 UNLOCK TABLES;
 
