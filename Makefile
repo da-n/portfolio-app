@@ -7,7 +7,7 @@ run: export DB_USER=root
 run: export DB_PASSWORD=badpassword123
 run: export DB_ADDRESS=localhost
 run: export DB_PORT=3306
-run: export DB_NAME=portfolio-app
+run: export DB_NAME=portfolio_app
 
 run:
 	@go build -o portfolio-app .
