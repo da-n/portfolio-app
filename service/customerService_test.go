@@ -8,30 +8,30 @@ import (
 	"testing"
 )
 
-var mockRepo *domain.MockCustomerRepository
-var service CustomerService
+var mockCustomerRepo *domain.MockCustomerRepository
+var customerService CustomerService
 
-func setup(t *testing.T) func() {
+func setupCustomerServiceTest(t *testing.T) func() {
 	ctrl := gomock.NewController(t)
-	mockRepo = domain.NewMockCustomerRepository(ctrl)
-	service = NewCustomerService(mockRepo)
+	mockCustomerRepo = domain.NewMockCustomerRepository(ctrl)
+	customerService = NewCustomerService(mockCustomerRepo)
 	return func() {
-		service = nil
+		customerService = nil
 		defer ctrl.Finish()
 	}
 }
 
 func Test_it_should_return_an_error_when_it_cannot_get_a_customer(t *testing.T) {
 	// setup
-	teardown := setup(t)
+	teardown := setupCustomerServiceTest(t)
 	defer teardown()
 
 	// given
 	customerId := "1"
-	mockRepo.EXPECT().FindByCustomerId(customerId).Return(nil, errs.NewUnexpectedError("Unexpected database error"))
+	mockCustomerRepo.EXPECT().FindByCustomerId(customerId).Return(nil, errs.NewUnexpectedError("Unexpected database error"))
 
 	// when
-	_, err := service.GetCustomer(customerId)
+	_, err := customerService.GetCustomer(customerId)
 
 	// then
 	if err == nil {
@@ -41,7 +41,7 @@ func Test_it_should_return_an_error_when_it_cannot_get_a_customer(t *testing.T) 
 
 func Test_it_should_return_a_customer_response_when_it_can_get_a_customer(t *testing.T) {
 	// setup
-	teardown := setup(t)
+	teardown := setupCustomerServiceTest(t)
 	defer teardown()
 
 	// given
@@ -52,10 +52,10 @@ func Test_it_should_return_a_customer_response_when_it_can_get_a_customer(t *tes
 		Email:      "theia@example.com",
 		Password:   "password123",
 	}
-	mockRepo.EXPECT().FindByCustomerId(customer.CustomerId).Return(&customer, nil)
+	mockCustomerRepo.EXPECT().FindByCustomerId(customer.CustomerId).Return(&customer, nil)
 
 	// when
-	c, _ := service.GetCustomer(customer.CustomerId)
+	c, _ := customerService.GetCustomer(customer.CustomerId)
 
 	// then
 	if c == nil {

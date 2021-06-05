@@ -14,7 +14,7 @@ type CustomerRepositoryDb struct {
 }
 
 // FindById find a customer by their customer_id
-func (r CustomerRepositoryDb) FindByCustomerId(customerId string) (*Customer, *errs.AppError) {
+func (r CustomerRepositoryDb) FindById(customerId string) (*Customer, *errs.AppError) {
 	query := "select customer_id, first_name, last_name, email from customers where customers.customer_id = ?"
 
 	var c Customer
