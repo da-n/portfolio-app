@@ -15,7 +15,7 @@ type AccountRepositoryDb struct {
 
 // FindById find an account by its account_id
 func (r AccountRepositoryDb) FindAll(customerId string) ([]Account, *errs.AppError) {
-	query := "select account_id, customer_id, account_type, balance from accounts where accounts.customer_id = ?"
+	query := "select id, customer_id, account_type, balance from accounts where customer_id = ?"
 	a := make([]Account, 0)
 	err := r.client.Select(&a, query, customerId)
 	if err != nil {
@@ -28,7 +28,7 @@ func (r AccountRepositoryDb) FindAll(customerId string) ([]Account, *errs.AppErr
 
 // FindById find an account by its account_id
 func (r AccountRepositoryDb) FindById(accountId string) (*Account, *errs.AppError) {
-	query := "select account_id, customer_id, account_type, balance from accounts where accounts.account_id = ?"
+	query := "select id, customer_id, account_type, balance from accounts where id = ?"
 
 	var a Account
 	err := r.client.Get(&a, query, accountId)

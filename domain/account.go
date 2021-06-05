@@ -8,7 +8,7 @@ import (
 const Portfolio = "portfolio"
 
 type Account struct {
-	AccountId   string `db:"account_id"`
+	AccountId   string `db:"id"`
 	CustomerId  string `db:"customer_id"`
 	AccountType string `db:"account_type"`
 	Balance     int    `db:"balance"`
