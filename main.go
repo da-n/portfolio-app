@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/da-n/portfolio-app/app"
 	"github.com/da-n/portfolio-app/domain"
+	"github.com/da-n/portfolio-app/errs"
 	"github.com/da-n/portfolio-app/service"
+	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	"log"
 	"os"
@@ -28,10 +30,14 @@ func main() {
 
 	// create handlers
 	userHandlers := app.UserHandlers{service.NewUserService(userRepositoryDb)}
+
+	// routes
+	router := mux.NewRouter()
+	router.HandleFunc("/users/{user_id:[0-9]+}", userHandlers.GetUser)
 }
 
 // envCheck verify all necessary environment variables are set to run application
-func envCheck() error {
+func envCheck() *errs.AppError {
 	envVars := []string{
 		"SERVER_ADDRESS",
 		"SERVER_PORT",
@@ -44,7 +50,7 @@ func envCheck() error {
 
 	for _, k := range envVars {
 		if os.Getenv(k) == "" {
-			return fmt.Errorf("Environment variable %s not defined. Terminating application...", k)
+			return errs.NewUnexpectedError("Environment variable '" + k + "' not defined. Terminating application...")
 		}
 	}
 
@@ -52,7 +58,7 @@ func envCheck() error {
 }
 
 // getDbClient create a new database client using sqlx
-func getDbClient() (*sqlx.DB, error) {
+func getDbClient() (*sqlx.DB, *errs.AppError) {
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbAddress := os.Getenv("DB_ADDRESS")
@@ -62,7 +68,7 @@ func getDbClient() (*sqlx.DB, error) {
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbAddress, dbPort, dbName)
 	client, err := sqlx.Open("mysql", dataSourceName)
 	if err != nil {
-		return nil, err
+		return nil, errs.NewUnexpectedError(err.Error())
 	}
 
 	client.SetConnMaxLifetime(time.Minute * 3)
