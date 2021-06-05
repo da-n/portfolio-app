@@ -15,7 +15,7 @@ type DefaultCustomerService struct {
 }
 
 func (service DefaultCustomerService) GetCustomer(customerId string) (*dto.CustomerResponse, *errs.AppError) {
-	c, err := service.repo.FindById(customerId)
+	c, err := service.repo.FindByCustomerId(customerId)
 	if err != nil {
 		return nil, err
 	}
