@@ -26,14 +26,18 @@ func Start() {
 	}
 
 	// create database repositories
+	accountRepositoryDb := domain.NewAccountRepositoryDb(dbClient)
 	customerRepositoryDb := domain.NewCustomerRepositoryDb(dbClient)
 
 	// create handlers
+	accountHandlers := AccountHandlers{service.NewAccountService(accountRepositoryDb)}
 	customerHandlers := CustomerHandlers{service.NewCustomerService(customerRepositoryDb)}
 
 	// routes
 	router := mux.NewRouter()
 	router.HandleFunc("/customers/{customer_id:[0-9]+}", customerHandlers.GetCustomer).Methods(http.MethodGet).Name("GetCustomer")
+	router.HandleFunc("/customers/{customer_id:[0-9]+}/accounts", accountHandlers.ListAccounts).Methods(http.MethodGet).Name("ListAccounts")
+	router.HandleFunc("/customers/{customer_id:[0-9]+}/accounts/{account_id:[0-9]+}", accountHandlers.GetAccount).Methods(http.MethodGet).Name("GetAccount")
 
 	// start server
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", os.Getenv("SERVER_ADDRESS"), os.Getenv("SERVER_PORT")), router))

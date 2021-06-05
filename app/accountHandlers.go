@@ -12,7 +12,7 @@ type AccountHandlers struct {
 
 func (h AccountHandlers) ListAccounts(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	customerId := vars["customerId"]
+	customerId := vars["customer_id"]
 	accounts, err := h.service.ListAccounts(customerId)
 	if err != nil {
 		writeJsonResponse(w, err.Code, err.Message)
