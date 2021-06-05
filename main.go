@@ -8,8 +8,10 @@ import (
 
 func main() {
 	if err := envCheck(); err != nil {
-		log.Fatalf("One or more environment variables are not defined, terminating application: %v", err)
+		log.Fatal(err)
 	}
+
+
 }
 
 // envCheck verify all necessary environment variables are set to run application
