@@ -14,12 +14,12 @@ run:
 	./portfolio-app $(ARGS)
 
 test:
-	$(info ****PLEASE ENSURE MOCKS ARE GENERATED BEFORE RUNNING TESTS****)
-	$(info To generate mocks run "make mocks")
+	$(info *** PLEASE ENSURE MOCKS ARE GENERATED BEFORE RUNNING TESTS)
+	$(info To generate mocks run "make mock")
 
 	@go test -v ./...
 
-mocks:
+mock:
 	@go generate ./...
 
 fmt:
