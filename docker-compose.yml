@@ -1,0 +1,21 @@
+version: '3'
+
+# note normally this file would use env vars or a secret manager e.g. ${MYSQL_PASSWORD}, values are hard-coded for
+# convenience only
+
+services:
+  mysql:
+    image: mysql:5.6.27
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+      - ./resources/docker/initdb:/docker-entrypoint-initdb.d
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: badpassword123
+      TZ: Europe/London
+
+volumes:
+  mysqldata:
+    driver: local
