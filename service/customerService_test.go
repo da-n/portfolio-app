@@ -46,16 +46,16 @@ func Test_it_should_return_a_customer_response_when_it_can_get_a_customer(t *tes
 
 	// given
 	customer := appdomain.Customer{
-		CustomerId: "1",
-		FirstName:  "Theia",
-		LastName:   "Parker",
-		Email:      "theia@example.com",
-		Password:   "password123",
+		Id:        "1",
+		FirstName: "Theia",
+		LastName:  "Parker",
+		Email:     "theia@example.com",
+		Password:  "password123",
 	}
-	mockCustomerRepo.EXPECT().FindByCustomerId(customer.CustomerId).Return(&customer, nil)
+	mockCustomerRepo.EXPECT().FindByCustomerId(customer.Id).Return(&customer, nil)
 
 	// when
-	c, _ := customerService.GetCustomer(customer.CustomerId)
+	c, _ := customerService.GetCustomer(customer.Id)
 
 	// then
 	if c == nil {
