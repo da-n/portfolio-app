@@ -8,7 +8,7 @@ import (
 const Portfolio = "portfolio"
 
 type Account struct {
-	AccountId   string `db:"id"`
+	Id          string `db:"id"`
 	CustomerId  string `db:"customer_id"`
 	AccountType string `db:"account_type"`
 	Balance     int    `db:"balance"`
@@ -17,7 +17,7 @@ type Account struct {
 // ToDto takes a Account and casts it to dto.AccountResponse
 func (a Account) ToDto() dto.AccountResponse {
 	return dto.AccountResponse{
-		AccountId:   a.AccountId,
+		Id:          a.Id,
 		CustomerId:  a.CustomerId,
 		AccountType: a.AccountType,
 		Balance:     a.Balance,
