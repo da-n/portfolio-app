@@ -36,11 +36,17 @@ func Start() {
 
 	// routes
 	router := mux.NewRouter()
-	router.HandleFunc("/customers/{customer_id:[0-9]+}", customerHandlers.GetCustomer).Methods(http.MethodGet).Name("GetCustomer")
-	router.HandleFunc("/customers/{customer_id:[0-9]+}/accounts", accountHandlers.ListAccounts).Methods(http.MethodGet).Name("ListAccounts")
-	router.HandleFunc("/customers/{customer_id:[0-9]+}/accounts/{account_id:[0-9]+}", accountHandlers.GetAccount).Methods(http.MethodGet).Name("GetAccount")
-	router.HandleFunc("/customers/{customer_id:[0-9]+}/accounts/{account_id:[0-9]+}/withdrawal-requests", accountHandlers.CreateWithdrawalRequest).Methods(http.MethodPost).Name("CreateWithdrawalRequest")
-	router.HandleFunc("/portfolios/{portfolio_id:[0-9]+}", accountHandlers.GetPortfolio).Methods(http.MethodGet).Name("GetPortfolio")
+	api := router.PathPrefix("/api/").Subrouter()
+	api.HandleFunc("/customers/{customer_id:[0-9]+}", customerHandlers.GetCustomer).Methods(http.MethodGet).Name("GetCustomer")
+	api.HandleFunc("/customers/{customer_id:[0-9]+}/accounts", accountHandlers.ListAccounts).Methods(http.MethodGet).Name("ListAccounts")
+	api.HandleFunc("/customers/{customer_id:[0-9]+}/accounts/{account_id:[0-9]+}", accountHandlers.GetAccount).Methods(http.MethodGet).Name("GetAccount")
+	api.HandleFunc("/customers/{customer_id:[0-9]+}/accounts/{account_id:[0-9]+}/withdrawal-requests", accountHandlers.CreateWithdrawalRequest).Methods(http.MethodPost).Name("CreateWithdrawalRequest")
+	api.HandleFunc("/portfolios/{portfolio_id:[0-9]+}", accountHandlers.GetPortfolio).Methods(http.MethodGet).Name("GetPortfolio")
+	// for purposes of demo serving static files and index from same app, this would not normally be part of the api app
+	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("./front/assets/"))))
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./front/public/index.html")
+	})
 
 	// start server
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", os.Getenv("SERVER_ADDRESS"), os.Getenv("SERVER_PORT")), router))
