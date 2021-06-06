@@ -86,6 +86,30 @@ INSERT INTO `withdrawal_requests` VALUES
 
 UNLOCK TABLES;
 
+DROP TABLE IF EXISTS `order_sheets`;
+CREATE TABLE `order_sheets` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `account_id` int(11) NOT NULL,
+    `withdrawal_request_id` int(11),
+    `status` varchar(10) NOT NULL DEFAULT 'pending',
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `order_sheets_accounts_FK` (`account_id`),
+    CONSTRAINT `order_sheets_accounts_FK` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
+    KEY `order_sheets_withdrawal_requests_FK` (`withdrawal_request_id`),
+    CONSTRAINT `order_sheets_withdrawal_requests_FK` FOREIGN KEY (`withdrawal_request_id`) REFERENCES `withdrawal_requests` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `order_sheets` WRITE;
+
+/*!40000 ALTER TABLE `order_sheets` DISABLE KEYS */;
+INSERT INTO `order_sheets` VALUES
+(1,1,1,'complete','2021-05-18 12:05:18'),
+(2,2,2,'complete','2021-05-19 11:25:37'),
+(3,2,3,'complete','2021-05-21 11:25:36');
+
+UNLOCK TABLES;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

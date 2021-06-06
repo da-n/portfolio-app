@@ -60,3 +60,17 @@ func (h AccountHandlers) CreateWithdrawalRequest(w http.ResponseWriter, r *http.
 		}
 	}
 }
+
+func (h AccountHandlers) GetOrderSheet(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	orderSheetId, err := strconv.ParseInt(vars["order_sheet_id"], 10, 64)
+	if err != nil {
+		writeJsonResponse(w, http.StatusBadRequest, err.Error())
+	}
+	orderSheet, appErr := h.service.GetOrderSheet(orderSheetId)
+	if appErr != nil {
+		writeJsonResponse(w, appErr.Code, appErr.Message)
+	} else {
+		writeJsonResponse(w, http.StatusOK, orderSheet)
+	}
+}

@@ -26,7 +26,9 @@ func (a Account) ToDto() dto.AccountResponse {
 
 //go:generate mockgen -destination=../mocks/domain/mockAccountRepository.go -package=domain github.com/da-n/portfolio-app/domain AccountRepository
 type AccountRepository interface {
-	FindAll(customerId int64) ([]Account, *errs.AppError)
-	FindById(accountId int64) (*Account, *errs.AppError)
-	SaveWithdrawalRequest(withdrawalRequest WithdrawalRequest) (*WithdrawalRequest, *errs.AppError)
+	FindAllAccounts(int64) ([]Account, *errs.AppError)
+	FindAccountById(int64) (*Account, *errs.AppError)
+	SaveWithdrawalRequest(WithdrawalRequest) (*WithdrawalRequest, *errs.AppError)
+	FindOrderSheetById(int64) (*OrderSheet, *errs.AppError)
+	SaveOrderSheet(OrderSheet) (*OrderSheet, *errs.AppError)
 }
