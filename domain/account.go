@@ -5,7 +5,7 @@ import (
 	"github.com/da-n/portfolio-app/errs"
 )
 
-const Portfolio = "portfolio"
+const AccountTypePortfolio = "portfolio"
 
 type Account struct {
 	Id          int64  `db:"id"`

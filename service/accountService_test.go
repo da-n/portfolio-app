@@ -48,13 +48,13 @@ func Test_it_should_return_a_slice_of_accounts(t *testing.T) {
 		{
 			Id:          int64(1),
 			CustomerId:  int64(1),
-			AccountType: appdomain.Portfolio,
+			AccountType: appdomain.AccountTypePortfolio,
 			Balance:     int64(20000000),
 		},
 		{
 			Id:          int64(2),
 			CustomerId:  int64(2),
-			AccountType: appdomain.Portfolio,
+			AccountType: appdomain.AccountTypePortfolio,
 			Balance:     int64(20000000),
 		},
 	}
@@ -95,7 +95,7 @@ func Test_it_should_return_an_account(t *testing.T) {
 	account := appdomain.Account{
 		Id:          int64(1),
 		CustomerId:  int64(1),
-		AccountType: appdomain.Portfolio,
+		AccountType: appdomain.AccountTypePortfolio,
 		Balance:     int64(20000000),
 	}
 	mockAccountRepo.EXPECT().FindAccountById(int64(1)).Return(&account, nil)
