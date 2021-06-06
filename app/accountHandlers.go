@@ -52,7 +52,7 @@ func (h AccountHandlers) CreateWithdrawalRequest(w http.ResponseWriter, r *http.
 		writeJsonResponse(w, http.StatusBadRequest, decodeErr.Error())
 	} else {
 		req.AccountId = accountId
-		withdrawalRequest, appErr := h.service.CreateWithdrawalRequest(req)
+		withdrawalRequest, appErr := h.service.CreateWithdrawalRequest(&req)
 		if appErr != nil {
 			writeJsonResponse(w, appErr.Code, appErr.Message)
 		} else {
@@ -72,5 +72,19 @@ func (h AccountHandlers) GetOrderSheet(w http.ResponseWriter, r *http.Request) {
 		writeJsonResponse(w, appErr.Code, appErr.Message)
 	} else {
 		writeJsonResponse(w, http.StatusOK, orderSheet)
+	}
+}
+
+func (h AccountHandlers) GetPortfolio(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	portfolioId, err := strconv.ParseInt(vars["portfolio_id"], 10, 64)
+	if err != nil {
+		writeJsonResponse(w, http.StatusBadRequest, err.Error())
+	}
+	portfolio, appErr := h.service.GetPortfolio(portfolioId)
+	if appErr != nil {
+		writeJsonResponse(w, appErr.Code, appErr.Message)
+	} else {
+		writeJsonResponse(w, http.StatusOK, portfolio)
 	}
 }

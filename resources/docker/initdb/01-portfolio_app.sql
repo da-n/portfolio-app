@@ -101,6 +101,7 @@ CREATE TABLE `accounts` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `customer_id` int(11) NOT NULL,
     `portfolio_id` int(11) NOT NULL,
+    `currency_code` varchar(3) NOT NULL,
     `balance` bigint(20) NOT NULL,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
@@ -114,7 +115,7 @@ LOCK TABLES `accounts` WRITE;
 
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
 INSERT INTO `accounts` VALUES
-(1,1,1,20000000,'2021-05-15 10:15:25');
+(1,1,1,'GBP',20000000,'2021-05-15 10:15:25');
 
 UNLOCK TABLES;
 
@@ -142,13 +143,10 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `order_sheets`;
 CREATE TABLE `order_sheets` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `account_id` int(11) NOT NULL,
     `withdrawal_request_id` int(11),
     `status` varchar(10) NOT NULL DEFAULT 'pending',
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    KEY `order_sheets_accounts_FK` (`account_id`),
-    CONSTRAINT `order_sheets_accounts_FK` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
     KEY `order_sheets_withdrawal_requests_FK` (`withdrawal_request_id`),
     CONSTRAINT `order_sheets_withdrawal_requests_FK` FOREIGN KEY (`withdrawal_request_id`) REFERENCES `withdrawal_requests` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -168,6 +166,7 @@ CREATE TABLE `instructions` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `order_sheet_id` int(11) NOT NULL,
     `instruction_type` varchar(10) NOT NULL,
+    `isin` varchar(12) NOT NULL,
     `amount` bigint(20) NOT NULL,
     `currency_code` varchar(3) NOT NULL,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,

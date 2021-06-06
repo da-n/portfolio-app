@@ -4,17 +4,16 @@ import (
 	"github.com/da-n/portfolio-app/domain"
 	"github.com/da-n/portfolio-app/dto"
 	"github.com/da-n/portfolio-app/errs"
-	"time"
 )
 
-const dbTSLayout = "2006-01-02 15:04:05"
-
 type AccountService interface {
-	ListAccounts(int64) ([]dto.AccountResponse, *errs.AppError)
-	GetAccount(int64) (*dto.AccountResponse, *errs.AppError)
-	CreateWithdrawalRequest(dto.WithdrawalRequestRequest) (*dto.WithdrawalRequestResponse, *errs.AppError)
-	GetOrderSheet(int64) (*dto.OrderSheetResponse, *errs.AppError)
-	CreateOrderSheet(domain.WithdrawalRequest) (*domain.OrderSheet, *errs.AppError)
+	ListAccounts(customerId int64) ([]dto.AccountResponse, *errs.AppError)
+	GetAccount(accountId int64) (*dto.AccountResponse, *errs.AppError)
+	CreateWithdrawalRequest(req *dto.WithdrawalRequestRequest) (*dto.WithdrawalRequestResponse, *errs.AppError)
+	GetOrderSheet(orderSheetId int64) (*dto.OrderSheetResponse, *errs.AppError)
+	CreateOrderSheet(withdrawalRequest *domain.WithdrawalRequest) (*dto.OrderSheetResponse, *errs.AppError)
+	CreateInstructions(orderSheet *domain.OrderSheet, withdrawalRequest *domain.WithdrawalRequest, account *domain.Account) ([]domain.Instruction, *errs.AppError)
+	GetPortfolio(portfolioId int64) (*dto.PortfolioResponse, *errs.AppError)
 }
 
 type DefaultAccountService struct {
@@ -45,7 +44,7 @@ func (service DefaultAccountService) GetAccount(accountId int64) (*dto.AccountRe
 	return &response, nil
 }
 
-func (service DefaultAccountService) CreateWithdrawalRequest(req dto.WithdrawalRequestRequest) (*dto.WithdrawalRequestResponse, *errs.AppError) {
+func (service DefaultAccountService) CreateWithdrawalRequest(req *dto.WithdrawalRequestRequest) (*dto.WithdrawalRequestResponse, *errs.AppError) {
 	err := req.Validate()
 	if err != nil {
 		return nil, err
@@ -54,20 +53,19 @@ func (service DefaultAccountService) CreateWithdrawalRequest(req dto.WithdrawalR
 	a := domain.WithdrawalRequest{
 		AccountId: req.AccountId,
 		Amount:    req.Amount,
-		CreatedAt: time.Now().Format(dbTSLayout),
 	}
 	withdrawalRequest, err := service.repo.SaveWithdrawalRequest(a)
 	if err != nil {
 		return nil, err
 	}
 
-	orderSheet, err := service.CreateOrderSheet(*withdrawalRequest)
+	orderSheet, err := service.CreateOrderSheet(withdrawalRequest)
 	if err != nil {
 		return nil, err
 	}
 
 	response := withdrawalRequest.ToDto()
-	response.OrderSheet = orderSheet.ToDto()
+	response.OrderSheet = orderSheet
 	return &response, nil
 }
 
@@ -81,25 +79,79 @@ func (service DefaultAccountService) GetOrderSheet(orderSheetId int64) (*dto.Ord
 	return &response, nil
 }
 
-func (service DefaultAccountService) CreateOrderSheet(w domain.WithdrawalRequest) (*domain.OrderSheet, *errs.AppError) {
+func (service DefaultAccountService) CreateOrderSheet(withdrawalRequest *domain.WithdrawalRequest) (*dto.OrderSheetResponse, *errs.AppError) {
 
 	// For the purposes of the demo the order sheet is going to be created amd completed synchronously, it would be
 	// enhanced by initially returning it as "pending" and any consumer can poll or receive notification when it has
 	// been "completed"
 	o := domain.OrderSheet{
-		AccountId:           w.AccountId,
-		WithdrawalRequestId: w.Id,
+		WithdrawalRequestId: withdrawalRequest.Id,
 		Status:              domain.OrderSheetComplete,
-		CreatedAt:           time.Now().Format(dbTSLayout),
 	}
+	// create a new order sheet
 	orderSheet, err := service.repo.SaveOrderSheet(o)
 	if err != nil {
 		return nil, err
 	}
 
-	// todo: implement instruction logic when entities and portfolios exist
+	// get the account
+	account, err := service.repo.FindAccountById(withdrawalRequest.AccountId)
+	if err != nil {
+		return nil, err
+	}
 
-	return orderSheet, nil
+	// generate instructions for the withdrawal request based on the portfolio
+	instructions, err := service.CreateInstructions(orderSheet, withdrawalRequest, account)
+	if err != nil {
+		return nil, err
+	}
+	orderSheet.Instructions = instructions
+	response := orderSheet.ToDto()
+
+	return &response, nil
+}
+
+func (service DefaultAccountService) CreateInstructions(orderSheet *domain.OrderSheet, withdrawalRequest *domain.WithdrawalRequest, account *domain.Account) ([]domain.Instruction, *errs.AppError) {
+	// get the account portfolio
+	portfolio, err := service.repo.FindPortfolioById(account.PortfolioId)
+	if err != nil {
+		return nil, err
+	}
+
+	// we are going to divide the total amount requested by the percentages of the portfolio assets holdings e.g.
+	// asset a = 40%
+	// asset b = 60%
+	// amount requested = £1000
+	// instruction 1 = sell 400 for asset a
+	// instruction 2 = sell 600 for asset b
+	// using basic formula: percentage of asset * amount requested / 100
+	instructions := make([]domain.Instruction, 0)
+	for _, asset := range portfolio.Assets {
+		i := domain.Instruction{
+			OrderSheetId:    orderSheet.Id,
+			InstructionType: domain.InstructionTypeSell,
+			Isin:            asset.Isin,
+			Amount:          (asset.Percent * withdrawalRequest.Amount) / 100,
+			CurrencyCode:    account.CurrencyCode,
+		}
+		// create a new order sheet
+		instruction, err := service.repo.SaveInstruction(i)
+		if err != nil {
+			return nil, err
+		}
+		instructions = append(instructions, *instruction)
+	}
+
+	return instructions, nil
+}
+
+func (service DefaultAccountService) GetPortfolio(portfolioId int64) (*dto.PortfolioResponse, *errs.AppError) {
+	p, err := service.repo.FindPortfolioById(portfolioId)
+	if err != nil {
+		return nil, err
+	}
+	response := p.ToDto()
+	return &response, nil
 }
 
 func NewAccountService(r domain.AccountRepository) DefaultAccountService {
