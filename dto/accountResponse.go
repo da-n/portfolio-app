@@ -1,8 +1,8 @@
 package dto
 
 type AccountResponse struct {
-	Id          string `json:"id"`
-	CustomerId  string `json:"customerId"`
+	Id          int64  `json:"id"`
+	CustomerId  int64  `json:"customerId"`
 	AccountType string `json:"accountType"`
-	Balance     int    `json:"balance"`
+	Balance     int64  `json:"balance"`
 }

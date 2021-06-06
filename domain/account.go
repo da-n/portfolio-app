@@ -8,10 +8,10 @@ import (
 const Portfolio = "portfolio"
 
 type Account struct {
-	Id          string `db:"id"`
-	CustomerId  string `db:"customer_id"`
+	Id          int64  `db:"id"`
+	CustomerId  int64  `db:"customer_id"`
 	AccountType string `db:"account_type"`
-	Balance     int    `db:"balance"`
+	Balance     int64  `db:"balance"`
 }
 
 // ToDto takes a Account and casts it to dto.AccountResponse
@@ -26,6 +26,7 @@ func (a Account) ToDto() dto.AccountResponse {
 
 //go:generate mockgen -destination=../mocks/domain/mockAccountRepository.go -package=domain github.com/da-n/portfolio-app/domain AccountRepository
 type AccountRepository interface {
-	FindAll(customerId string) ([]Account, *errs.AppError)
-	FindById(accountId string) (*Account, *errs.AppError)
+	FindAll(customerId int64) ([]Account, *errs.AppError)
+	FindById(accountId int64) (*Account, *errs.AppError)
+	SaveWithdrawalRequest(withdrawalRequest WithdrawalRequest) (*WithdrawalRequest, *errs.AppError)
 }

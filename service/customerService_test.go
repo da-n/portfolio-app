@@ -27,11 +27,10 @@ func Test_it_should_return_an_error_when_it_cannot_get_a_customer(t *testing.T) 
 	defer teardown()
 
 	// given
-	customerId := "1"
-	mockCustomerRepo.EXPECT().FindByCustomerId(customerId).Return(nil, errs.NewUnexpectedError("Unexpected database error"))
+	mockCustomerRepo.EXPECT().FindById(int64(0)).Return(nil, errs.NewUnexpectedError("Unexpected database error"))
 
 	// when
-	_, err := customerService.GetCustomer(customerId)
+	_, err := customerService.GetCustomer(int64(0))
 
 	// then
 	if err == nil {
@@ -46,16 +45,16 @@ func Test_it_should_return_a_customer_response_when_it_can_get_a_customer(t *tes
 
 	// given
 	customer := appdomain.Customer{
-		Id:        "1",
+		Id:        int64(1),
 		FirstName: "Theia",
 		LastName:  "Parker",
 		Email:     "theia@example.com",
 		Password:  "password123",
 	}
-	mockCustomerRepo.EXPECT().FindByCustomerId(customer.Id).Return(&customer, nil)
+	mockCustomerRepo.EXPECT().FindById(int64(1)).Return(&customer, nil)
 
 	// when
-	c, _ := customerService.GetCustomer(customer.Id)
+	c, _ := customerService.GetCustomer(int64(1))
 
 	// then
 	if c == nil {

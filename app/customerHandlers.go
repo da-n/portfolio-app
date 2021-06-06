@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type CustomerHandlers struct {
@@ -14,10 +15,13 @@ type CustomerHandlers struct {
 
 func (h CustomerHandlers) GetCustomer(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	customerId := vars["customer_id"]
-	customer, err := h.service.GetCustomer(customerId)
+	customerId, err := strconv.ParseInt(vars["customer_id"], 10, 64)
 	if err != nil {
-		writeJsonResponse(w, err.Code, err.Message)
+		writeJsonResponse(w, http.StatusBadRequest, err.Error())
+	}
+	customer, appErr := h.service.GetCustomer(customerId)
+	if appErr != nil {
+		writeJsonResponse(w, appErr.Code, appErr.Message)
 	} else {
 		writeJsonResponse(w, http.StatusOK, customer)
 	}
