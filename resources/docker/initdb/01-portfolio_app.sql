@@ -42,26 +42,84 @@ INSERT INTO `customers` VALUES
 
 UNLOCK TABLES;
 
+DROP TABLE IF EXISTS `portfolios`;
+CREATE TABLE `portfolios` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(191) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `portfolios` WRITE;
+
+/*!40000 ALTER TABLE `portfolios` DISABLE KEYS */;
+INSERT INTO `portfolios` VALUES
+(1,'Growth Portfolio');
+
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `assets`;
+CREATE TABLE `assets` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `isin` varchar(12) NOT NULL,
+    `name` varchar(191) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `assets` WRITE;
+
+/*!40000 ALTER TABLE `assets` DISABLE KEYS */;
+INSERT INTO `assets` VALUES
+(1,'IE00B52L4369','BlackRock Institutional Cash Series Sterling Liquidity Agency Inc'),
+(2,'GB00BQ1YHQ70','Threadneedle UK Property Authorised Investment Net GBP 1 Acc'),
+(3,'GB00B3X7QG63','Vanguard FTSE U.K. All Share Index Unit Trust Accumulation'),
+(4,'GB00BG0QP828','Legal & General Japan Index Trust C Class Accumulation'),
+(5,'GB00BPN5P238','Vanguard US Equity Index Institutional Plus GBP Accumulation'),
+(6,'IE00B1S74Q32','Vanguard U.K. Investment Grade Bond Index Fund GBP Accumulation');
+
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `asset_portfolio`;
+CREATE TABLE `asset_portfolio` (
+    `asset_id` int(11) NOT NULL,
+    `portfolio_id` int(11) NOT NULL,
+    `percent` int(3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `asset_portfolio` WRITE;
+
+/*!40000 ALTER TABLE `asset_portfolio` DISABLE KEYS */;
+INSERT INTO `asset_portfolio` VALUES
+(1,1,20),
+(2,1,20),
+(3,1,10),
+(4,1,5),
+(5,1,15),
+(6,1,30);
+
+UNLOCK TABLES;
+
 DROP TABLE IF EXISTS `accounts`;
 CREATE TABLE `accounts` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `customer_id` int(11) NOT NULL,
-    `account_type` varchar(10) NOT NULL DEFAULT 'portfolio',
+    `portfolio_id` int(11) NOT NULL,
     `balance` bigint(20) NOT NULL,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    KEY `accounts_FK` (`customer_id`),
-    CONSTRAINT `accounts_FK` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE
+    KEY `accounts_customers_FK` (`customer_id`),
+    CONSTRAINT `accounts_customers_FK` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
+    KEY `accounts_portfolios_FK` (`portfolio_id`),
+    CONSTRAINT `accounts_portfolios_FK` FOREIGN KEY (`portfolio_id`) REFERENCES `portfolios` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 LOCK TABLES `accounts` WRITE;
 
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
 INSERT INTO `accounts` VALUES
-(1,1,'portfolio',20000000,'2021-05-15 10:15:25'),
-(2,2,'portfolio',10000000,'2021-05-16 11:55:27'),
-(3,2,'portfolio',3000000,'2021-05-18 12:35:02'),
-(4,3,'portfolio',32000000,'2021-06-05 08:22:35');
+(1,1,1,20000000,'2021-05-15 10:15:25'),
+(2,2,1,10000000,'2021-05-16 11:55:27'),
+(3,2,1,3000000,'2021-05-18 12:35:02'),
+(4,3,1,32000000,'2021-06-05 08:22:35');
 
 UNLOCK TABLES;
 
