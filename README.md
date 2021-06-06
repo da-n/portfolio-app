@@ -1,13 +1,62 @@
 # portfolio-app
 
-portfolio-app is an account management simulation app. The back-end is built in Go using a Hexagonal Architecture. The front-end is in Vue.js. The purpose of the app is to generate order sheets for an account that is setup in a modelled portfolio. The front-end UI permits a withdrawal amount to be specified, validates this and displays an order sheet with sale instructions.
+This is an account management app that simulates requesting withdrawals from a modelled portfolio account. The back-end is built in Go and follows a Hexagonal Architecture. The front-end is built in Vue.js. The purpose of the app is to generate order sheets for an account that is setup in a modelled portfolio. The front-end UI permits a withdrawal amount to be specified, validates it and displays an order sheet with sale instructions.
 
-### Criteria
+## Installation
 
-1. Must be able to see current value of modelled portfolio account.
-1. Must be able to specify a withdrawal amount.
-1. Must not be able to withdraw more than the current value of the portfolio.
-1. Must create an order sheet with a sell instruction.
+Go is required to compile the app. `Docker` (with `docker-compose`) is required to run the database. `make` is not required but recommended, a `Makefile` is included that has several convenience helper methods for things like running the app and tests etc.
+
+## Instructions
+
+Build and run the app:
+
+```
+make run
+```
+
+Start the database in the separate tab/window:
+
+```
+cd resources/docker
+docker-compose up -d
+```
+
+Navigate to [http://localhost:8080](http://localhost:8080) to start using the app.
+
+## Tests
+
+Note, mocks are not included in VCS, they will need to be generated in order to run tests. Generate mocks:
+
+```
+make mock
+```
+
+Run tests:
+
+```
+make test
+```
+
+## API
+
+The following API resources are available:
+
+| Method | Endpoint                                                         | Description                  | 
+|--------|------------------------------------------------------------------|------------------------------|
+| GET    | /api/customers/{customer}                                        | Get a customer by ID         |
+| GET    | /api/customers/{customer}/accounts                               | List accounts for a customer |
+| GET    | /api/customers/{customer}/accounts/{account}                     | Get an account by ID         |
+| POST   | /api/customers/{customer}/accounts/{account}/withdrawal-requests | Create a withdrawal request  |
+| GET    | /api/portfolios/{portfolio}                                      | Get a portfolio by ID        |
+
+A Postman collection of the resources is available in `resources/postman`.
+
+## Brief
+
+1. Users must be able to see current value of their modelled portfolio account.
+1. Users must be able to specify a withdrawal amount.
+1. Users must not be able to withdraw more than the current value of the portfolio.
+1. Users must receive an order sheet with sell instructions upon a successful withdrawal request.
 
 ## Definitions and language
 
@@ -18,58 +67,24 @@ portfolio-app is an account management simulation app. The back-end is built in 
 * Events: withdrawal request created, withdrawal request accepted, withdrawal request rejected, instruction created, order created,
 * Repository: CustomerRepository, PortfolioRepository, AssetRepository, AccountRepository, OrderSheetRepository
 
-## Resources and API
+## Assumptions
 
-The following structure will be as follows:
+The following assumptions are made:
 
 * There can be many modelled portfolios
 * A modelled portfolio can have many assets to make up 100% of the portfolio
 * There can be many customers
 * A customer can have many accounts
 * An account is of type modelled portfolio
-* An account has a value
+* An account has a balance
 * An account can have many withdrawal requests
 * A valid withdrawal request will generate an order sheet
-* An order sheet can have many instructions
 * An account can have many order sheets
+* An order sheet can have many instructions
 * Instructions can of type "BUY", "INVEST", "SELL", "RAISE"
 
-## Installation
+## Out of scope
 
-Aside from Go, Docker, the `docker-compose` command, and a compiler that can run `make` commands is required.
-
-## Instructions
-
-A Makefile is included to aid running and testing. To start the back-end (Go) application run:
-
-```
-make run
-```
-
-The back-end app is served from `http://localhost:8080`, see further down for an overview of the API endpoints and Postman collection instructions.
-
-## Tests
-
-To run tests, first generate mocks by running the following command:
-
-```
-make mock
-```
-
-Then tests can be run with:
-
-```
-make test
-```
-
-## Back-end API (Go)
-
-The back-end app is an API written in Go. The following API endpoints are enabled:
-
-| Method | Endpoint                                                            | Description                  | Name                    |
-|--------|---------------------------------------------------------------------|------------------------------|-------------------------|
-| GET    | /customers/{customer}                                               | Get a customer by ID         | GetCustomer             |
-| GET    | /customers/{customer}/accounts                                      | List accounts for a customer | ListAccounts            |
-| GET    | /customers/{customer}/accounts/{account}                            | Get an account by ID         | GetAccount              |
-| POST   | /customers/{customer}/accounts/{account}/withdrawal-requests        | Create a withdrawal request  | CreateWithdrawalRequest |
-| GET    | /portfolios/{portfolio}                                             | Get a portfolio by ID        | GetPortfolio            |
+* Authentication and authorization, the context is always customer 1
+* Full CRUD API endpoints, only endpoints necessary for the brief are implemented
+* Other types of instruction, only "SELL" is included

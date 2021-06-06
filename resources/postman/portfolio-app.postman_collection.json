@@ -75,7 +75,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"accountId\": 1,\n    \"amount\": 200000\n}",
+					"raw": "{\n    \"accountId\": 1,\n    \"amount\": 200123\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -95,6 +95,26 @@
 						"accounts",
 						"1",
 						"withdrawal-requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetPortfolio",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/portfolios/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"portfolios",
+						"1"
 					]
 				}
 			},
