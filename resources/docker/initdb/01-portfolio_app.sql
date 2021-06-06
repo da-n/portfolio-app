@@ -36,9 +36,7 @@ LOCK TABLES `customers` WRITE;
 
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
 INSERT INTO `customers` VALUES
-(1,'Theia','Parker','theia@example.com','password123','2021-05-15 10:05:15'),
-(2,'Kaine','Berger','kaine@example.com','password123','2021-05-16 11:45:17'),
-(3,'Rami','Mejia','rami@example.com','password123','2021-06-05 08:04:25');
+(1,'Test','Customer','test-customer@example.com','password123','2021-05-15 10:05:15');
 
 UNLOCK TABLES;
 
@@ -116,10 +114,7 @@ LOCK TABLES `accounts` WRITE;
 
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
 INSERT INTO `accounts` VALUES
-(1,1,1,20000000,'2021-05-15 10:15:25'),
-(2,2,1,10000000,'2021-05-16 11:55:27'),
-(3,2,1,3000000,'2021-05-18 12:35:02'),
-(4,3,1,32000000,'2021-06-05 08:22:35');
+(1,1,1,20000000,'2021-05-15 10:15:25');
 
 UNLOCK TABLES;
 
@@ -136,11 +131,11 @@ CREATE TABLE `withdrawal_requests` (
 
 LOCK TABLES `withdrawal_requests` WRITE;
 
-/*!40000 ALTER TABLE `withdrawal_requests` DISABLE KEYS */;
-INSERT INTO `withdrawal_requests` VALUES
-(1,1,2000000,'2021-05-18 12:05:15'),
-(2,2,300000,'2021-05-19 11:25:35'),
-(3,2,1400000,'2021-05-21 11:25:35');
+# /*!40000 ALTER TABLE `withdrawal_requests` DISABLE KEYS */;
+# INSERT INTO `withdrawal_requests` VALUES
+# (1,1,2000000,'2021-05-18 12:05:15'),
+# (2,2,300000,'2021-05-19 11:25:35'),
+# (3,2,1400000,'2021-05-21 11:25:35');
 
 UNLOCK TABLES;
 
@@ -160,11 +155,34 @@ CREATE TABLE `order_sheets` (
 
 LOCK TABLES `order_sheets` WRITE;
 
-/*!40000 ALTER TABLE `order_sheets` DISABLE KEYS */;
-INSERT INTO `order_sheets` VALUES
-(1,1,1,'complete','2021-05-18 12:05:18'),
-(2,2,2,'complete','2021-05-19 11:25:37'),
-(3,2,3,'complete','2021-05-21 11:25:36');
+# /*!40000 ALTER TABLE `order_sheets` DISABLE KEYS */;
+# INSERT INTO `order_sheets` VALUES
+# (1,1,1,'complete','2021-05-18 12:05:18'),
+# (2,2,2,'complete','2021-05-19 11:25:37'),
+# (3,2,3,'complete','2021-05-21 11:25:36');
+
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `instructions`;
+CREATE TABLE `instructions` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `order_sheet_id` int(11) NOT NULL,
+    `instruction_type` varchar(10) NOT NULL,
+    `amount` bigint(20) NOT NULL,
+    `currency_code` varchar(3) NOT NULL,
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `instructions_order_sheets_FK` (`order_sheet_id`),
+    CONSTRAINT `instructions_order_sheets_FK` FOREIGN KEY (`order_sheet_id`) REFERENCES `order_sheets` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+LOCK TABLES `instructions` WRITE;
+
+# /*!40000 ALTER TABLE `instructions` DISABLE KEYS */;
+# INSERT INTO `instructions` VALUES
+# (1,1,1,'complete','2021-05-18 12:05:18'),
+# (2,2,2,'complete','2021-05-19 11:25:37'),
+# (3,2,3,'complete','2021-05-21 11:25:36');
 
 UNLOCK TABLES;
 

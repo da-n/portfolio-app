@@ -62,10 +62,11 @@ func (w OrderSheet) ToDto() dto.OrderSheetResponse {
 
 type Instruction struct {
 	Id              int64  `db:"id"`
-	OrderSheetId    int64  `db:"customer_id"`
+	OrderSheetId    int64  `db:"order_sheet_id"`
 	InstructionType string `db:"instruction_type"`
 	Amount          int64  `db:"amount"`
 	CurrencyCode    string `db:"currency_code"`
+	CreatedAt       string `db:"created_at"`
 }
 
 // ToDto takes an Instruction and casts it to dto.InstructionResponse
@@ -76,6 +77,7 @@ func (a Instruction) ToDto() dto.InstructionResponse {
 		InstructionType: a.InstructionType,
 		Amount:          a.Amount,
 		CurrencyCode:    a.CurrencyCode,
+		CreatedAt:       a.CreatedAt,
 	}
 }
 

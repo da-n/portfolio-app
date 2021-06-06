@@ -6,4 +6,5 @@ type InstructionResponse struct {
 	InstructionType string `json:"instructionType"`
 	Amount          int64  `json:"amount"`
 	CurrencyCode    string `json:"currencyCode"`
+	CreatedAt       string `json:"createdAt"`
 }
