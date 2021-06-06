@@ -1,10 +1,8 @@
 package app
 
 import (
-	"encoding/json"
 	"github.com/da-n/portfolio-app/service"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -24,13 +22,5 @@ func (h CustomerHandlers) GetCustomer(w http.ResponseWriter, r *http.Request) {
 		writeJsonResponse(w, appErr.Code, appErr.Message)
 	} else {
 		writeJsonResponse(w, http.StatusOK, customer)
-	}
-}
-
-func writeJsonResponse(w http.ResponseWriter, code int, data interface{}) {
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(code)
-	if err := json.NewEncoder(w).Encode(data); err != nil {
-		log.Fatal(err)
 	}
 }
