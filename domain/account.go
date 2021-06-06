@@ -5,13 +5,11 @@ import (
 	"github.com/da-n/portfolio-app/errs"
 )
 
-const AccountTypePortfolio = "portfolio"
-
 type Account struct {
-	Id          int64  `db:"id"`
-	CustomerId  int64  `db:"customer_id"`
-	AccountType string `db:"account_type"`
-	Balance     int64  `db:"balance"`
+	Id          int64 `db:"id"`
+	CustomerId  int64 `db:"customer_id"`
+	PortfolioId int64 `db:"portfolio_id"`
+	Balance     int64 `db:"balance"`
 }
 
 // ToDto takes a Account and casts it to dto.AccountResponse
@@ -19,7 +17,7 @@ func (a Account) ToDto() dto.AccountResponse {
 	return dto.AccountResponse{
 		Id:          a.Id,
 		CustomerId:  a.CustomerId,
-		AccountType: a.AccountType,
+		PortfolioId: a.PortfolioId,
 		Balance:     a.Balance,
 	}
 }
