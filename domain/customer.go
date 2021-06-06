@@ -25,5 +25,5 @@ func (c Customer) ToDto() dto.CustomerResponse {
 
 //go:generate mockgen -destination=../mocks/domain/mockCustomerRepository.go -package=domain github.com/da-n/portfolio-app/domain CustomerRepository
 type CustomerRepository interface {
-	FindById(customerId int64) (*Customer, *errs.AppError)
+	FindById(int64) (*Customer, *errs.AppError)
 }
