@@ -9,7 +9,8 @@
         <div class="mb-3">
           <div class="input-group input-group-lg">
             <div class="input-group-text">{{ account.currencyCode }}</div>
-            <input type="number" min="0" step="1" class="form-control" id="autoSizingInputGroup" placeholder="0" v-model="withdrawal">
+            <input type="number" min="0" step="1" class="form-control" placeholder="0" v-model="dollars">
+            <span class="input-group-text">.00</span>
             <div class="alert alert-danger mt-4" role="alert" v-if="errors !== null">
               {{ errors }}
             </div>
@@ -92,7 +93,7 @@ axios.defaults.baseURL = 'http://localhost:8080/api';
       customer: null,
       account: null,
       portfolio: null,
-      withdrawal: null,
+      dollars: null,
       orderSheet: null,
     };
   },
@@ -124,6 +125,9 @@ axios.defaults.baseURL = 'http://localhost:8080/api';
     decimalNumber(num :number): string {
       return num.toString().replace(/\b(\d+)(\d{2})\b/g, '$1.$2');
     },
+    addCents(num :string) {
+      return num !== null ? parseInt(`${num}00`, 10) : null;
+    },
     setCustomer(customerId :string) {
       axios.get(`/customers/${customerId}`)
         .then((response) => {
@@ -147,7 +151,7 @@ axios.defaults.baseURL = 'http://localhost:8080/api';
       this.errors = null;
       axios.post(`/customers/${this.customerId}/accounts/${this.accountId}/withdrawal-requests`, {
         accountId: this.accountIdInt,
-        amount: this.withdrawalInt,
+        amount: this.addCents(this.dollars),
       })
         .then((response) => {
           this.orderSheet = Object.prototype.hasOwnProperty.call(response.data, 'orderSheet') ? response.data.orderSheet : null;
