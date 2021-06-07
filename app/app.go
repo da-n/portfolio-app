@@ -15,44 +15,33 @@ import (
 )
 
 func Start() {
-	// check that all env vars are set
 	if err := envCheck(); err != nil {
 		log.Fatal(err)
 	}
 
-	// get a mysql client instance
 	dbClient, err := getDbClient()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// create database repositories
 	accountRepositoryDb := domain.NewAccountRepositoryDb(dbClient)
 	customerRepositoryDb := domain.NewCustomerRepositoryDb(dbClient)
 
-	// create handlers
 	accountHandlers := AccountHandlers{service.NewAccountService(accountRepositoryDb)}
 	customerHandlers := CustomerHandlers{service.NewCustomerService(customerRepositoryDb)}
 
-	// routes
 	router := mux.NewRouter()
-	api := router.PathPrefix("/api/").Subrouter()
-	api.HandleFunc("/customers/{customer_id:[0-9]+}", customerHandlers.GetCustomer).Methods(http.MethodGet).Name("GetCustomer")
-	api.HandleFunc("/customers/{customer_id:[0-9]+}/accounts", accountHandlers.ListAccounts).Methods(http.MethodGet).Name("ListAccounts")
-	api.HandleFunc("/customers/{customer_id:[0-9]+}/accounts/{account_id:[0-9]+}", accountHandlers.GetAccount).Methods(http.MethodGet).Name("GetAccount")
-	api.HandleFunc("/customers/{customer_id:[0-9]+}/accounts/{account_id:[0-9]+}/withdrawal-requests", accountHandlers.CreateWithdrawalRequest).Methods(http.MethodPost).Name("CreateWithdrawalRequest")
-	api.HandleFunc("/portfolios/{portfolio_id:[0-9]+}", accountHandlers.GetPortfolio).Methods(http.MethodGet).Name("GetPortfolio")
-	// for purposes of demo serving static files and index from same app, this would not normally be part of the api app
-	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("./front/assets/"))))
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./front/public/index.html")
-	})
 
-	// start server
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", os.Getenv("SERVER_ADDRESS"), os.Getenv("SERVER_PORT")), router))
+	api := router.PathPrefix("/api/").Subrouter()
+	api.HandleFunc("/customers/{customer_id:[0-9]+}", customerHandlers.GetCustomer).Methods(http.MethodGet, http.MethodOptions).Name("GetCustomer")
+	api.HandleFunc("/customers/{customer_id:[0-9]+}/accounts", accountHandlers.ListAccounts).Methods(http.MethodGet, http.MethodOptions).Name("ListAccounts")
+	api.HandleFunc("/customers/{customer_id:[0-9]+}/accounts/{account_id:[0-9]+}", accountHandlers.GetAccount).Methods(http.MethodGet, http.MethodOptions).Name("GetAccount")
+	api.HandleFunc("/customers/{customer_id:[0-9]+}/accounts/{account_id:[0-9]+}/withdrawal-requests", accountHandlers.CreateWithdrawalRequest).Methods(http.MethodPost, http.MethodOptions).Name("CreateWithdrawalRequest")
+	api.HandleFunc("/portfolios/{portfolio_id:[0-9]+}", accountHandlers.GetPortfolio).Methods(http.MethodGet, http.MethodOptions).Name("GetPortfolio")
+
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", os.Getenv("SERVER_ADDRESS"), os.Getenv("SERVER_PORT")), setCorsHeaders(router)))
 }
 
-// envCheck verify all necessary environment variables are set to run application
 func envCheck() *errs.AppError {
 	envVars := []string{
 		"SERVER_ADDRESS",
@@ -73,15 +62,14 @@ func envCheck() *errs.AppError {
 	return nil
 }
 
-// getDbClient create a new database client using sqlx
 func getDbClient() (*sqlx.DB, *errs.AppError) {
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbAddress := os.Getenv("DB_ADDRESS")
 	dbPort := os.Getenv("DB_PORT")
 	dbName := os.Getenv("DB_NAME")
-
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbAddress, dbPort, dbName)
+
 	client, err := sqlx.Open("mysql", dataSourceName)
 	if err != nil {
 		return nil, errs.NewUnexpectedError(err.Error())
@@ -96,8 +84,26 @@ func getDbClient() (*sqlx.DB, *errs.AppError) {
 
 func writeJsonResponse(w http.ResponseWriter, code int, data interface{}) {
 	w.Header().Add("Content-Type", "application/json")
+
 	w.WriteHeader(code)
+
 	if err := json.NewEncoder(w).Encode(data); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func setCorsHeaders(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// demo comments
+		// for testing we are allowing all origins for CORS, normally this would be granular
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization, cache-control")
+
+		if r.Method == "OPTIONS" {
+			return
+		}
+
+		h.ServeHTTP(w, r)
+	})
 }

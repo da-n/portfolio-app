@@ -16,7 +16,6 @@ type Account struct {
 	Balance      int64  `db:"balance"`
 }
 
-// ToDto takes a Account and casts it to dto.AccountResponse
 func (a Account) ToDto() dto.AccountResponse {
 	return dto.AccountResponse{
 		Id:           a.Id,
@@ -34,7 +33,6 @@ type WithdrawalRequest struct {
 	CreatedAt string `db:"created_at"`
 }
 
-// ToDto takes a WithdrawalRequest and casts it to dto.WithdrawalRequestResponse
 func (w WithdrawalRequest) ToDto() dto.WithdrawalRequestResponse {
 	return dto.WithdrawalRequestResponse{
 		Id:        w.Id,
@@ -52,12 +50,12 @@ type OrderSheet struct {
 	Instructions        []Instruction
 }
 
-// ToDto takes a OrderSheet and casts it to dto.OrderSheetResponse
 func (o OrderSheet) ToDto() dto.OrderSheetResponse {
 	instructions := make([]dto.InstructionResponse, 0)
 	for _, v := range o.Instructions {
 		instructions = append(instructions, v.ToDto())
 	}
+
 	return dto.OrderSheetResponse{
 		Id:                  o.Id,
 		WithdrawalRequestId: o.WithdrawalRequestId,
@@ -77,7 +75,6 @@ type Instruction struct {
 	CreatedAt       string `db:"created_at"`
 }
 
-// ToDto takes an Instruction and casts it to dto.InstructionResponse
 func (i Instruction) ToDto() dto.InstructionResponse {
 	return dto.InstructionResponse{
 		Id:              i.Id,
@@ -96,12 +93,12 @@ type Portfolio struct {
 	Assets []Asset `db:"assets"`
 }
 
-// ToDto takes a Portfolio and casts it to dto.PortfolioResponse
 func (a Portfolio) ToDto() dto.PortfolioResponse {
 	assets := make([]dto.AssetResponse, 0)
 	for _, v := range a.Assets {
 		assets = append(assets, v.ToDto())
 	}
+
 	return dto.PortfolioResponse{
 		Id:     a.Id,
 		Name:   a.Name,
@@ -116,7 +113,6 @@ type Asset struct {
 	Percent int64  `db:"percent"`
 }
 
-// ToDto takes a Account and casts it to dto.AccountResponse
 func (a Asset) ToDto() dto.AssetResponse {
 	return dto.AssetResponse{
 		Id:      a.Id,
@@ -128,11 +124,11 @@ func (a Asset) ToDto() dto.AssetResponse {
 
 //go:generate mockgen -destination=../mocks/domain/mockAccountRepository.go -package=domain github.com/da-n/portfolio-app/domain AccountRepository
 type AccountRepository interface {
-	FindAllAccounts(int64) ([]Account, *errs.AppError)
-	FindAccountById(int64) (*Account, *errs.AppError)
-	SaveWithdrawalRequest(WithdrawalRequest) (*WithdrawalRequest, *errs.AppError)
-	FindOrderSheetById(int64) (*OrderSheet, *errs.AppError)
-	SaveOrderSheet(OrderSheet) (*OrderSheet, *errs.AppError)
-	FindPortfolioById(int64) (*Portfolio, *errs.AppError)
-	SaveInstruction(Instruction) (*Instruction, *errs.AppError)
+	FindAllAccounts(customerId int64) ([]Account, *errs.AppError)
+	FindAccountById(accountId int64) (*Account, *errs.AppError)
+	SaveWithdrawalRequest(withdrawalRequest WithdrawalRequest) (*WithdrawalRequest, *errs.AppError)
+	FindOrderSheetById(orderSheetId int64) (*OrderSheet, *errs.AppError)
+	SaveOrderSheet(orderSheet OrderSheet) (*OrderSheet, *errs.AppError)
+	FindPortfolioById(portfolioId int64) (*Portfolio, *errs.AppError)
+	SaveInstruction(instruction Instruction) (*Instruction, *errs.AppError)
 }

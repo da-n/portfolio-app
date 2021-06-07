@@ -15,10 +15,12 @@ type AccountHandlers struct {
 
 func (h AccountHandlers) ListAccounts(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+
 	customerId, err := strconv.ParseInt(vars["customer_id"], 10, 64)
 	if err != nil {
 		writeJsonResponse(w, http.StatusBadRequest, err.Error())
 	}
+
 	accounts, appErr := h.service.ListAccounts(customerId)
 	if appErr != nil {
 		writeJsonResponse(w, appErr.Code, appErr.Message)
@@ -29,10 +31,12 @@ func (h AccountHandlers) ListAccounts(w http.ResponseWriter, r *http.Request) {
 
 func (h AccountHandlers) GetAccount(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+
 	accountId, err := strconv.ParseInt(vars["account_id"], 10, 64)
 	if err != nil {
 		writeJsonResponse(w, http.StatusBadRequest, err.Error())
 	}
+
 	customer, appErr := h.service.GetAccount(accountId)
 	if appErr != nil {
 		writeJsonResponse(w, appErr.Code, appErr.Message)
@@ -43,16 +47,18 @@ func (h AccountHandlers) GetAccount(w http.ResponseWriter, r *http.Request) {
 
 func (h AccountHandlers) CreateWithdrawalRequest(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+
 	accountId, err := strconv.ParseInt(vars["account_id"], 10, 64)
 	if err != nil {
 		writeJsonResponse(w, http.StatusBadRequest, err.Error())
 	}
-	var req dto.WithdrawalRequestRequest
-	if decodeErr := json.NewDecoder(r.Body).Decode(&req); decodeErr != nil {
+
+	var withdrawalRequestRequest dto.WithdrawalRequestRequest
+	if decodeErr := json.NewDecoder(r.Body).Decode(&withdrawalRequestRequest); decodeErr != nil {
 		writeJsonResponse(w, http.StatusBadRequest, decodeErr.Error())
 	} else {
-		req.AccountId = accountId
-		withdrawalRequest, appErr := h.service.CreateWithdrawalRequest(&req)
+		withdrawalRequestRequest.AccountId = accountId
+		withdrawalRequest, appErr := h.service.CreateWithdrawalRequest(&withdrawalRequestRequest)
 		if appErr != nil {
 			writeJsonResponse(w, appErr.Code, appErr.Message)
 		} else {
@@ -63,10 +69,12 @@ func (h AccountHandlers) CreateWithdrawalRequest(w http.ResponseWriter, r *http.
 
 func (h AccountHandlers) GetOrderSheet(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+
 	orderSheetId, err := strconv.ParseInt(vars["order_sheet_id"], 10, 64)
 	if err != nil {
 		writeJsonResponse(w, http.StatusBadRequest, err.Error())
 	}
+
 	orderSheet, appErr := h.service.GetOrderSheet(orderSheetId)
 	if appErr != nil {
 		writeJsonResponse(w, appErr.Code, appErr.Message)
@@ -77,10 +85,12 @@ func (h AccountHandlers) GetOrderSheet(w http.ResponseWriter, r *http.Request) {
 
 func (h AccountHandlers) GetPortfolio(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+
 	portfolioId, err := strconv.ParseInt(vars["portfolio_id"], 10, 64)
 	if err != nil {
 		writeJsonResponse(w, http.StatusBadRequest, err.Error())
 	}
+
 	portfolio, appErr := h.service.GetPortfolio(portfolioId)
 	if appErr != nil {
 		writeJsonResponse(w, appErr.Code, appErr.Message)

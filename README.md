@@ -4,34 +4,60 @@ This is an account management app that simulates requesting withdrawals from a m
 
 ## Installation
 
-Go is required to compile the app. `Docker` (with `docker-compose`) is required to run the database. `make` is not required but recommended, a `Makefile` is included that has several convenience helper methods for things like running the app and tests etc.
+There are a few dependencies:
+
+* `Go` to compile and run the app
+* `Docker` (with `docker-compose`) to run the database
+* `Node` (with `NPM`) 
+* `make` to more easily run the app and tests etc
 
 ## Instructions
 
-Build and run the app:
+There are three components to run the app, it is recommended to run these in three separate tabs/windows in a terminal: 
+
+1. The back-end (`Go` binary)
+1. The database (`Docker` with `docker-compose`)
+1. The front-end (`NPM` run command)
+
+To run the back-end:
 
 ```
 make run
 ```
-
-Start the database in the separate tab/window:
+To run the database:
 
 ```
-cd resources/docker
-docker-compose up -d
+cd ./resources/docker
+docker-compose up
 ```
 
-Navigate to [http://localhost:8080](http://localhost:8080) to start using the app.
+To run the front-end for the first time:
+
+```
+cd ./front
+npm ci
+```
+
+To run the front-end after installing node modules:
+
+```
+cd ./front
+npm run serve
+```
+
+With everything up and running, navigate to the URL output from `npm run serve` (normally [http://localhost:8081](http://localhost:8081)).
 
 ## Tests
 
-Note, mocks are not included in VCS, they will need to be generated in order to run tests. Generate mocks:
+Mocks are not included in VCS, they need to be generated in order to run tests. 
+
+Generate mocks:
 
 ```
 make mock
 ```
 
-Run tests:
+With mocks generated can now run tests:
 
 ```
 make test
@@ -51,14 +77,14 @@ The following API resources are available:
 
 A Postman collection of the resources is available in `resources/postman`.
 
-## Brief
+## App brief
 
 1. Users must be able to see current value of their modelled portfolio account.
 1. Users must be able to specify a withdrawal amount.
 1. Users must not be able to withdraw more than the current value of the portfolio.
 1. Users must receive an order sheet with sell instructions upon a successful withdrawal request.
 
-## Definitions and language
+## Definitions and language used in the app
 
 * Context: manage a portfolio account
 * Language: modelled portfolio, asset, isin, portfolio, account, withdrawal, buy, invest, sell, raise, units, instruction, holding, fund, order sheet, investor, customer, value, balance
@@ -69,7 +95,7 @@ A Postman collection of the resources is available in `resources/postman`.
 
 ## Assumptions
 
-The following assumptions are made:
+The following assumptions exist:
 
 * There can be many modelled portfolios
 * A modelled portfolio can have many assets to make up 100% of the portfolio

@@ -28,6 +28,7 @@ CREATE TABLE `customers` (
     `last_name` varchar(191) NOT NULL,
     `email` varchar(191) NOT NULL,
     `password` varchar(191) NOT NULL,
+    `language` varchar(35) NOT NULL,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -36,7 +37,7 @@ LOCK TABLES `customers` WRITE;
 
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
 INSERT INTO `customers` VALUES
-(1,'Test','Customer','test-customer@example.com','password123','2021-05-15 10:05:15');
+(1,'Test','Customer','test-customer@example.com','password123','en-GB','2021-05-15 10:05:15');
 
 UNLOCK TABLES;
 
@@ -115,7 +116,7 @@ LOCK TABLES `accounts` WRITE;
 
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
 INSERT INTO `accounts` VALUES
-(1,1,1,'GBP',20000000,'2021-05-15 10:15:25');
+(1,1,1,'GBP',22000000,'2021-05-15 10:15:25');
 
 UNLOCK TABLES;
 

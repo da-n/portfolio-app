@@ -43,14 +43,14 @@ func TestItShouldReturnASliceOfAccounts(t *testing.T) {
 		{
 			Id:          int64(1),
 			CustomerId:  int64(1),
-			AccountType: appdomain.AccountTypePortfolio,
+			CurrencyCode: "GBP",
 			Balance:     int64(20000000),
 		},
 		{
 			Id:          int64(2),
 			CustomerId:  int64(2),
-			AccountType: appdomain.AccountTypePortfolio,
 			Balance:     int64(20000000),
+			CurrencyCode: "GBP",
 		},
 	}
 	mockAccountRepo.EXPECT().FindAllAccounts(int64(1)).Return(accounts, nil)
@@ -82,8 +82,8 @@ func TestItShouldReturnAnAccount(t *testing.T) {
 	account := appdomain.Account{
 		Id:          int64(1),
 		CustomerId:  int64(1),
-		AccountType: appdomain.AccountTypePortfolio,
 		Balance:     int64(20000000),
+		CurrencyCode: "GBP",
 	}
 	mockAccountRepo.EXPECT().FindAccountById(int64(1)).Return(&account, nil)
 

@@ -15,6 +15,7 @@ func setupCustomerServiceTest(t *testing.T) func() {
 	ctrl := gomock.NewController(t)
 	mockCustomerRepo = domain.NewMockCustomerRepository(ctrl)
 	customerService = NewCustomerService(mockCustomerRepo)
+
 	return func() {
 		customerService = nil
 		defer ctrl.Finish()
@@ -25,7 +26,7 @@ func TestItShouldReturnAnErrorWhenItCannotGetACustomer(t *testing.T) {
 	teardown := setupCustomerServiceTest(t)
 	defer teardown()
 
-	mockCustomerRepo.EXPECT().FindById(int64(0)).Return(nil, errs.NewUnexpectedError("Unexpected database error"))
+	mockCustomerRepo.EXPECT().FindByCustomerId(int64(0)).Return(nil, errs.NewUnexpectedError("Unexpected database error"))
 
 	_, err := customerService.GetCustomer(int64(0))
 
@@ -45,7 +46,7 @@ func TestItShouldReturnACustomerResponseWhenItCanGetACustomer(t *testing.T) {
 		Email:     "theia@example.com",
 		Password:  "password123",
 	}
-	mockCustomerRepo.EXPECT().FindById(int64(1)).Return(&customer, nil)
+	mockCustomerRepo.EXPECT().FindByCustomerId(int64(1)).Return(&customer, nil)
 
 	c, _ := customerService.GetCustomer(int64(1))
 

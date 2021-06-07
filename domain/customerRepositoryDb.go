@@ -8,17 +8,14 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// CustomerRepositoryDb is the database implementation of CustomerRepository
 type CustomerRepositoryDb struct {
 	client *sqlx.DB
 }
 
-// FindById find a customer by their customer_id
-func (r CustomerRepositoryDb) FindById(customerId int64) (*Customer, *errs.AppError) {
-	query := "select id, first_name, last_name, email from customers where id = ?"
-
-	var c Customer
-	err := r.client.Get(&c, query, customerId)
+func (r CustomerRepositoryDb) FindByCustomerId(customerId int64) (*Customer, *errs.AppError) {
+	query := "select id, first_name, last_name, email, language from customers where id = ?"
+	var customer Customer
+	err := r.client.Get(&customer, query, customerId)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -29,10 +26,9 @@ func (r CustomerRepositoryDb) FindById(customerId int64) (*Customer, *errs.AppEr
 		}
 	}
 
-	return &c, nil
+	return &customer, nil
 }
 
-// NewCustomerRepositoryDb instantiates a new CustomerRepositoryDb passing in a sqlx.DB instance
 func NewCustomerRepositoryDb(dbClient *sqlx.DB) CustomerRepositoryDb {
 	return CustomerRepositoryDb{dbClient}
 }

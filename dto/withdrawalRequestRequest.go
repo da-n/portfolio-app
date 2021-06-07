@@ -14,19 +14,11 @@ type WithdrawalRequestRequest struct {
 func (r WithdrawalRequestRequest) Validate() *errs.AppError {
 	errors := make([]string, 0)
 
-	accountId := r.AccountId
-	switch {
-	//case err != nil:
-	//	errors = append(errors, fmt.Sprintf("accountId not valid: " + err.Error()))
-	case accountId < 0:
+	if r.AccountId < 0 {
 		errors = append(errors, fmt.Sprintf("accountId is required"))
 	}
 
-	amount := r.Amount
-	switch {
-	//case err != nil:
-	//	errors = append(errors, fmt.Sprintf("amount not valid: " + err.Error()))
-	case amount < 0:
+	if r.Amount <= 0 {
 		errors = append(errors, fmt.Sprintf("amount must be greater than 0"))
 	}
 
