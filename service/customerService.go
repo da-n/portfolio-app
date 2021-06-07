@@ -19,7 +19,9 @@ func (service DefaultCustomerService) GetCustomer(customerId int64) (*dto.Custom
 	if err != nil {
 		return nil, err
 	}
+
 	response := c.ToDto()
+
 	return &response, nil
 }
 
