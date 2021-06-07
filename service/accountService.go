@@ -41,6 +41,7 @@ func (service DefaultAccountService) GetAccount(accountId int64) (*dto.AccountRe
 	}
 
 	response := a.ToDto()
+
 	return &response, nil
 }
 
@@ -66,6 +67,7 @@ func (service DefaultAccountService) CreateWithdrawalRequest(req *dto.Withdrawal
 
 	response := withdrawalRequest.ToDto()
 	response.OrderSheet = orderSheet
+
 	return &response, nil
 }
 
@@ -76,31 +78,30 @@ func (service DefaultAccountService) GetOrderSheet(orderSheetId int64) (*dto.Ord
 	}
 
 	response := o.ToDto()
+
 	return &response, nil
 }
 
 func (service DefaultAccountService) CreateOrderSheet(withdrawalRequest *domain.WithdrawalRequest) (*dto.OrderSheetResponse, *errs.AppError) {
-
-	// For the purposes of the demo the order sheet is going to be created amd completed synchronously, it would be
+	// demo comments
+	// for r the purposes of the demo the order sheet is going to be created amd completed synchronously, it could be
 	// enhanced by initially returning it as "pending" and any consumer can poll or receive notification when it has
 	// been "completed"
 	o := domain.OrderSheet{
 		WithdrawalRequestId: withdrawalRequest.Id,
 		Status:              domain.OrderSheetComplete,
 	}
-	// create a new order sheet
+
 	orderSheet, err := service.repo.SaveOrderSheet(o)
 	if err != nil {
 		return nil, err
 	}
 
-	// get the account
 	account, err := service.repo.FindAccountById(withdrawalRequest.AccountId)
 	if err != nil {
 		return nil, err
 	}
 
-	// generate instructions for the withdrawal request based on the portfolio
 	instructions, err := service.CreateInstructions(orderSheet, withdrawalRequest, account)
 	if err != nil {
 		return nil, err
@@ -112,12 +113,12 @@ func (service DefaultAccountService) CreateOrderSheet(withdrawalRequest *domain.
 }
 
 func (service DefaultAccountService) CreateInstructions(orderSheet *domain.OrderSheet, withdrawalRequest *domain.WithdrawalRequest, account *domain.Account) ([]domain.Instruction, *errs.AppError) {
-	// get the account portfolio
 	portfolio, err := service.repo.FindPortfolioById(account.PortfolioId)
 	if err != nil {
 		return nil, err
 	}
 
+	// demo comments
 	// we are going to divide the total amount requested by the percentages of the portfolio assets holdings e.g.
 	// asset a = 40%
 	// asset b = 60%
@@ -134,7 +135,6 @@ func (service DefaultAccountService) CreateInstructions(orderSheet *domain.Order
 			Amount:          (asset.Percent * withdrawalRequest.Amount) / 100,
 			CurrencyCode:    account.CurrencyCode,
 		}
-		// create a new order sheet
 		instruction, err := service.repo.SaveInstruction(i)
 		if err != nil {
 			return nil, err
@@ -150,7 +150,9 @@ func (service DefaultAccountService) GetPortfolio(portfolioId int64) (*dto.Portf
 	if err != nil {
 		return nil, err
 	}
+
 	response := p.ToDto()
+
 	return &response, nil
 }
 
