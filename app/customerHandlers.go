@@ -1,14 +1,14 @@
 package app
 
 import (
-	"github.com/da-n/portfolio-app/service"
+	"github.com/da-n/portfolio-app/domain"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 )
 
 type CustomerHandlers struct {
-	service service.CustomerService
+	service domain.CustomerService
 }
 
 func (h CustomerHandlers) GetCustomer(w http.ResponseWriter, r *http.Request) {

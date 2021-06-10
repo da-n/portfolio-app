@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/da-n/portfolio-app/domain"
 	"github.com/da-n/portfolio-app/errs"
-	"github.com/da-n/portfolio-app/service"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	"log"
@@ -27,8 +26,8 @@ func Start() {
 	accountRepositoryDb := domain.NewAccountRepositoryDb(dbClient)
 	customerRepositoryDb := domain.NewCustomerRepositoryDb(dbClient)
 
-	accountHandlers := AccountHandlers{service.NewAccountService(accountRepositoryDb)}
-	customerHandlers := CustomerHandlers{service.NewCustomerService(customerRepositoryDb)}
+	accountHandlers := AccountHandlers{domain.NewAccountService(accountRepositoryDb)}
+	customerHandlers := CustomerHandlers{domain.NewCustomerService(customerRepositoryDb)}
 
 	router := mux.NewRouter()
 

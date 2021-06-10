@@ -1,19 +1,17 @@
-package service
+package domain
 
 import (
-	appdomain "github.com/da-n/portfolio-app/domain"
 	"github.com/da-n/portfolio-app/errs"
-	"github.com/da-n/portfolio-app/mocks/domain"
 	"github.com/golang/mock/gomock"
 	"testing"
 )
 
-var mockAccountRepo *domain.MockAccountRepository
+var mockAccountRepo *MockAccountRepository
 var accountService AccountService
 
 func setupAccountServiceTest(t *testing.T) func() {
 	ctrl := gomock.NewController(t)
-	mockAccountRepo = domain.NewMockAccountRepository(ctrl)
+	mockAccountRepo = NewMockAccountRepository(ctrl)
 	accountService = NewAccountService(mockAccountRepo)
 
 	return func() {
@@ -39,7 +37,7 @@ func TestItShouldReturnASliceOfAccounts(t *testing.T) {
 	teardown := setupAccountServiceTest(t)
 	defer teardown()
 
-	accounts := []appdomain.Account{
+	accounts := []Account{
 		{
 			Id:           1,
 			CustomerId:   1,
@@ -79,7 +77,7 @@ func TestItShouldReturnAnAccount(t *testing.T) {
 	teardown := setupAccountServiceTest(t)
 	defer teardown()
 
-	account := appdomain.Account{
+	account := Account{
 		Id:           1,
 		CustomerId:   1,
 		Balance:      20000000,

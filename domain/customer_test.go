@@ -1,19 +1,17 @@
-package service
+package domain
 
 import (
-	appdomain "github.com/da-n/portfolio-app/domain"
 	"github.com/da-n/portfolio-app/errs"
-	"github.com/da-n/portfolio-app/mocks/domain"
 	"github.com/golang/mock/gomock"
 	"testing"
 )
 
-var mockCustomerRepo *domain.MockCustomerRepository
+var mockCustomerRepo *MockCustomerRepository
 var customerService CustomerService
 
 func setupCustomerServiceTest(t *testing.T) func() {
 	ctrl := gomock.NewController(t)
-	mockCustomerRepo = domain.NewMockCustomerRepository(ctrl)
+	mockCustomerRepo = NewMockCustomerRepository(ctrl)
 	customerService = NewCustomerService(mockCustomerRepo)
 
 	return func() {
@@ -39,7 +37,7 @@ func TestItShouldReturnACustomerResponseWhenItCanGetACustomer(t *testing.T) {
 	teardown := setupCustomerServiceTest(t)
 	defer teardown()
 
-	customer := appdomain.Customer{
+	customer := Customer{
 		Id:        1,
 		FirstName: "Theia",
 		LastName:  "Parker",

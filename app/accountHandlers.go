@@ -2,15 +2,15 @@ package app
 
 import (
 	"encoding/json"
+	"github.com/da-n/portfolio-app/domain"
 	"github.com/da-n/portfolio-app/dto"
-	"github.com/da-n/portfolio-app/service"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 )
 
 type AccountHandlers struct {
-	service service.AccountService
+	service domain.AccountService
 }
 
 func (h AccountHandlers) ListAccounts(w http.ResponseWriter, r *http.Request) {

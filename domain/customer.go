@@ -24,7 +24,30 @@ func (c Customer) ToDto() dto.CustomerResponse {
 	}
 }
 
-//go:generate mockgen -destination=../mocks/domain/mockCustomerRepository.go -package=domain github.com/da-n/portfolio-app/domain CustomerRepository
+//go:generate mockgen -destination=../domain/customer_mock.go -package=domain github.com/da-n/portfolio-app/domain CustomerRepository
 type CustomerRepository interface {
 	FindByCustomerId(customerId int) (*Customer, *errs.AppError)
+}
+
+type CustomerService interface {
+	GetCustomer(customerId int) (*dto.CustomerResponse, *errs.AppError)
+}
+
+type DefaultCustomerService struct {
+	repo CustomerRepository
+}
+
+func (service DefaultCustomerService) GetCustomer(customerId int) (*dto.CustomerResponse, *errs.AppError) {
+	c, err := service.repo.FindByCustomerId(customerId)
+	if err != nil {
+		return nil, err
+	}
+
+	response := c.ToDto()
+
+	return &response, nil
+}
+
+func NewCustomerService(r CustomerRepository) DefaultCustomerService {
+	return DefaultCustomerService{r}
 }
