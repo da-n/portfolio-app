@@ -7,20 +7,20 @@ import (
 )
 
 type AccountService interface {
-	ListAccounts(customerId int64) ([]dto.AccountResponse, *errs.AppError)
-	GetAccount(accountId int64) (*dto.AccountResponse, *errs.AppError)
+	ListAccounts(customerId int) ([]dto.AccountResponse, *errs.AppError)
+	GetAccount(accountId int) (*dto.AccountResponse, *errs.AppError)
 	CreateWithdrawalRequest(req *dto.WithdrawalRequestRequest) (*dto.WithdrawalRequestResponse, *errs.AppError)
-	GetOrderSheet(orderSheetId int64) (*dto.OrderSheetResponse, *errs.AppError)
+	GetOrderSheet(orderSheetId int) (*dto.OrderSheetResponse, *errs.AppError)
 	CreateOrderSheet(withdrawalRequest *domain.WithdrawalRequest) (*dto.OrderSheetResponse, *errs.AppError)
 	CreateInstructions(orderSheet *domain.OrderSheet, withdrawalRequest *domain.WithdrawalRequest, account *domain.Account) ([]domain.Instruction, *errs.AppError)
-	GetPortfolio(portfolioId int64) (*dto.PortfolioResponse, *errs.AppError)
+	GetPortfolio(portfolioId int) (*dto.PortfolioResponse, *errs.AppError)
 }
 
 type DefaultAccountService struct {
 	repo domain.AccountRepository
 }
 
-func (service DefaultAccountService) ListAccounts(customerId int64) ([]dto.AccountResponse, *errs.AppError) {
+func (service DefaultAccountService) ListAccounts(customerId int) ([]dto.AccountResponse, *errs.AppError) {
 	a, err := service.repo.FindAllAccounts(customerId)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ func (service DefaultAccountService) ListAccounts(customerId int64) ([]dto.Accou
 	return response, nil
 }
 
-func (service DefaultAccountService) GetAccount(accountId int64) (*dto.AccountResponse, *errs.AppError) {
+func (service DefaultAccountService) GetAccount(accountId int) (*dto.AccountResponse, *errs.AppError) {
 	a, err := service.repo.FindAccountById(accountId)
 	if err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func (service DefaultAccountService) CreateWithdrawalRequest(req *dto.Withdrawal
 	return &response, nil
 }
 
-func (service DefaultAccountService) GetOrderSheet(orderSheetId int64) (*dto.OrderSheetResponse, *errs.AppError) {
+func (service DefaultAccountService) GetOrderSheet(orderSheetId int) (*dto.OrderSheetResponse, *errs.AppError) {
 	o, err := service.repo.FindOrderSheetById(orderSheetId)
 	if err != nil {
 		return nil, err
@@ -145,7 +145,7 @@ func (service DefaultAccountService) CreateInstructions(orderSheet *domain.Order
 	return instructions, nil
 }
 
-func (service DefaultAccountService) GetPortfolio(portfolioId int64) (*dto.PortfolioResponse, *errs.AppError) {
+func (service DefaultAccountService) GetPortfolio(portfolioId int) (*dto.PortfolioResponse, *errs.AppError) {
 	p, err := service.repo.FindPortfolioById(portfolioId)
 	if err != nil {
 		return nil, err

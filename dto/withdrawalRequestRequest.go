@@ -7,8 +7,8 @@ import (
 )
 
 type WithdrawalRequestRequest struct {
-	AccountId int64 `json:"accountId"`
-	Amount    int64 `json:"amount"`
+	AccountId int `json:"accountId"`
+	Amount    int `json:"amount"`
 }
 
 func (r WithdrawalRequestRequest) Validate() *errs.AppError {

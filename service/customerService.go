@@ -7,14 +7,14 @@ import (
 )
 
 type CustomerService interface {
-	GetCustomer(customerId int64) (*dto.CustomerResponse, *errs.AppError)
+	GetCustomer(customerId int) (*dto.CustomerResponse, *errs.AppError)
 }
 
 type DefaultCustomerService struct {
 	repo domain.CustomerRepository
 }
 
-func (service DefaultCustomerService) GetCustomer(customerId int64) (*dto.CustomerResponse, *errs.AppError) {
+func (service DefaultCustomerService) GetCustomer(customerId int) (*dto.CustomerResponse, *errs.AppError) {
 	c, err := service.repo.FindByCustomerId(customerId)
 	if err != nil {
 		return nil, err

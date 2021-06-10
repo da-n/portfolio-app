@@ -19,7 +19,7 @@ func (h CustomerHandlers) GetCustomer(w http.ResponseWriter, r *http.Request) {
 		writeJsonResponse(w, http.StatusBadRequest, err.Error())
 	}
 
-	customer, appErr := h.service.GetCustomer(customerId)
+	customer, appErr := h.service.GetCustomer(int(customerId))
 	if appErr != nil {
 		writeJsonResponse(w, appErr.Code, appErr.Message)
 	} else {

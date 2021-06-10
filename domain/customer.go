@@ -6,7 +6,7 @@ import (
 )
 
 type Customer struct {
-	Id        int64  `db:"id"`
+	Id        int    `db:"id"`
 	FirstName string `db:"first_name"`
 	LastName  string `db:"last_name"`
 	Email     string `db:"email"`
@@ -26,5 +26,5 @@ func (c Customer) ToDto() dto.CustomerResponse {
 
 //go:generate mockgen -destination=../mocks/domain/mockCustomerRepository.go -package=domain github.com/da-n/portfolio-app/domain CustomerRepository
 type CustomerRepository interface {
-	FindByCustomerId(customerId int64) (*Customer, *errs.AppError)
+	FindByCustomerId(customerId int) (*Customer, *errs.AppError)
 }

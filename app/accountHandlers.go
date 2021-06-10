@@ -21,7 +21,7 @@ func (h AccountHandlers) ListAccounts(w http.ResponseWriter, r *http.Request) {
 		writeJsonResponse(w, http.StatusBadRequest, err.Error())
 	}
 
-	accounts, appErr := h.service.ListAccounts(customerId)
+	accounts, appErr := h.service.ListAccounts(int(customerId))
 	if appErr != nil {
 		writeJsonResponse(w, appErr.Code, appErr.Message)
 	} else {
@@ -37,7 +37,7 @@ func (h AccountHandlers) GetAccount(w http.ResponseWriter, r *http.Request) {
 		writeJsonResponse(w, http.StatusBadRequest, err.Error())
 	}
 
-	customer, appErr := h.service.GetAccount(accountId)
+	customer, appErr := h.service.GetAccount(int(accountId))
 	if appErr != nil {
 		writeJsonResponse(w, appErr.Code, appErr.Message)
 	} else {
@@ -57,7 +57,7 @@ func (h AccountHandlers) CreateWithdrawalRequest(w http.ResponseWriter, r *http.
 	if decodeErr := json.NewDecoder(r.Body).Decode(&withdrawalRequestRequest); decodeErr != nil {
 		writeJsonResponse(w, http.StatusBadRequest, decodeErr.Error())
 	} else {
-		withdrawalRequestRequest.AccountId = accountId
+		withdrawalRequestRequest.AccountId = int(accountId)
 		withdrawalRequest, appErr := h.service.CreateWithdrawalRequest(&withdrawalRequestRequest)
 		if appErr != nil {
 			writeJsonResponse(w, appErr.Code, appErr.Message)
@@ -75,7 +75,7 @@ func (h AccountHandlers) GetOrderSheet(w http.ResponseWriter, r *http.Request) {
 		writeJsonResponse(w, http.StatusBadRequest, err.Error())
 	}
 
-	orderSheet, appErr := h.service.GetOrderSheet(orderSheetId)
+	orderSheet, appErr := h.service.GetOrderSheet(int(orderSheetId))
 	if appErr != nil {
 		writeJsonResponse(w, appErr.Code, appErr.Message)
 	} else {
@@ -91,7 +91,7 @@ func (h AccountHandlers) GetPortfolio(w http.ResponseWriter, r *http.Request) {
 		writeJsonResponse(w, http.StatusBadRequest, err.Error())
 	}
 
-	portfolio, appErr := h.service.GetPortfolio(portfolioId)
+	portfolio, appErr := h.service.GetPortfolio(int(portfolioId))
 	if appErr != nil {
 		writeJsonResponse(w, appErr.Code, appErr.Message)
 	} else {

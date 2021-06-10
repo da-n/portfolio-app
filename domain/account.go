@@ -9,11 +9,11 @@ const OrderSheetComplete = "complete"
 const InstructionTypeSell = "SELL"
 
 type Account struct {
-	Id           int64  `db:"id"`
-	CustomerId   int64  `db:"customer_id"`
-	PortfolioId  int64  `db:"portfolio_id"`
+	Id           int    `db:"id"`
+	CustomerId   int    `db:"customer_id"`
+	PortfolioId  int    `db:"portfolio_id"`
 	CurrencyCode string `db:"currency_code"`
-	Balance      int64  `db:"balance"`
+	Balance      int    `db:"balance"`
 }
 
 func (a Account) ToDto() dto.AccountResponse {
@@ -27,9 +27,9 @@ func (a Account) ToDto() dto.AccountResponse {
 }
 
 type WithdrawalRequest struct {
-	Id        int64  `db:"id"`
-	AccountId int64  `db:"account_id"`
-	Amount    int64  `db:"amount"`
+	Id        int    `db:"id"`
+	AccountId int    `db:"account_id"`
+	Amount    int    `db:"amount"`
 	CreatedAt string `db:"created_at"`
 }
 
@@ -43,8 +43,8 @@ func (w WithdrawalRequest) ToDto() dto.WithdrawalRequestResponse {
 }
 
 type OrderSheet struct {
-	Id                  int64  `db:"id"`
-	WithdrawalRequestId int64  `db:"withdrawal_request_id"`
+	Id                  int    `db:"id"`
+	WithdrawalRequestId int    `db:"withdrawal_request_id"`
 	Status              string `db:"status"`
 	CreatedAt           string `db:"created_at"`
 	Instructions        []Instruction
@@ -66,11 +66,11 @@ func (o OrderSheet) ToDto() dto.OrderSheetResponse {
 }
 
 type Instruction struct {
-	Id              int64  `db:"id"`
-	OrderSheetId    int64  `db:"order_sheet_id"`
+	Id              int    `db:"id"`
+	OrderSheetId    int    `db:"order_sheet_id"`
 	InstructionType string `db:"instruction_type"`
 	Isin            string `db:"isin"`
-	Amount          int64  `db:"amount"`
+	Amount          int    `db:"amount"`
 	CurrencyCode    string `db:"currency_code"`
 	CreatedAt       string `db:"created_at"`
 }
@@ -88,7 +88,7 @@ func (i Instruction) ToDto() dto.InstructionResponse {
 }
 
 type Portfolio struct {
-	Id     int64   `db:"id"`
+	Id     int     `db:"id"`
 	Name   string  `db:"name"`
 	Assets []Asset `db:"assets"`
 }
@@ -107,10 +107,10 @@ func (a Portfolio) ToDto() dto.PortfolioResponse {
 }
 
 type Asset struct {
-	Id      int64  `db:"id"`
+	Id      int    `db:"id"`
 	Isin    string `db:"isin"`
 	Name    string `db:"name"`
-	Percent int64  `db:"percent"`
+	Percent int    `db:"percent"`
 }
 
 func (a Asset) ToDto() dto.AssetResponse {
@@ -124,11 +124,11 @@ func (a Asset) ToDto() dto.AssetResponse {
 
 //go:generate mockgen -destination=../mocks/domain/mockAccountRepository.go -package=domain github.com/da-n/portfolio-app/domain AccountRepository
 type AccountRepository interface {
-	FindAllAccounts(customerId int64) ([]Account, *errs.AppError)
-	FindAccountById(accountId int64) (*Account, *errs.AppError)
+	FindAllAccounts(customerId int) ([]Account, *errs.AppError)
+	FindAccountById(accountId int) (*Account, *errs.AppError)
 	SaveWithdrawalRequest(withdrawalRequest WithdrawalRequest) (*WithdrawalRequest, *errs.AppError)
-	FindOrderSheetById(orderSheetId int64) (*OrderSheet, *errs.AppError)
+	FindOrderSheetById(orderSheetId int) (*OrderSheet, *errs.AppError)
 	SaveOrderSheet(orderSheet OrderSheet) (*OrderSheet, *errs.AppError)
-	FindPortfolioById(portfolioId int64) (*Portfolio, *errs.AppError)
+	FindPortfolioById(portfolioId int) (*Portfolio, *errs.AppError)
 	SaveInstruction(instruction Instruction) (*Instruction, *errs.AppError)
 }

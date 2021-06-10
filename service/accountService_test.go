@@ -26,9 +26,9 @@ func TestItShouldReturnAnErrorWhenItCannotListAccounts(t *testing.T) {
 	teardown := setupAccountServiceTest(t)
 	defer teardown()
 
-	mockAccountRepo.EXPECT().FindAllAccounts(int64(1)).Return(nil, errs.NewUnexpectedError("Unexpected database error"))
+	mockAccountRepo.EXPECT().FindAllAccounts(1).Return(nil, errs.NewUnexpectedError("Unexpected database error"))
 
-	_, err := accountService.ListAccounts(int64(1))
+	_, err := accountService.ListAccounts(1)
 
 	if err == nil {
 		t.Error("expected err to be returned, got nil")
@@ -41,21 +41,21 @@ func TestItShouldReturnASliceOfAccounts(t *testing.T) {
 
 	accounts := []appdomain.Account{
 		{
-			Id:          int64(1),
-			CustomerId:  int64(1),
+			Id:           1,
+			CustomerId:   1,
 			CurrencyCode: "GBP",
-			Balance:     int64(20000000),
+			Balance:      20000000,
 		},
 		{
-			Id:          int64(2),
-			CustomerId:  int64(2),
-			Balance:     int64(20000000),
+			Id:           2,
+			CustomerId:   2,
+			Balance:      20000000,
 			CurrencyCode: "GBP",
 		},
 	}
-	mockAccountRepo.EXPECT().FindAllAccounts(int64(1)).Return(accounts, nil)
+	mockAccountRepo.EXPECT().FindAllAccounts(1).Return(accounts, nil)
 
-	a, _ := accountService.ListAccounts(int64(1))
+	a, _ := accountService.ListAccounts(1)
 
 	if a == nil {
 		t.Error("expected Accounts to be returned, got nil")
@@ -66,9 +66,9 @@ func TestItShouldReturnAnErrorWhenItCannotGetAnAccount(t *testing.T) {
 	teardown := setupAccountServiceTest(t)
 	defer teardown()
 
-	mockAccountRepo.EXPECT().FindAccountById(int64(0)).Return(nil, errs.NewNotFoundError("Account could not be found"))
+	mockAccountRepo.EXPECT().FindAccountById(0).Return(nil, errs.NewNotFoundError("Account could not be found"))
 
-	_, err := accountService.GetAccount(int64(0))
+	_, err := accountService.GetAccount(0)
 
 	if err == nil {
 		t.Error("expected err to be returned, got nil")
@@ -80,14 +80,14 @@ func TestItShouldReturnAnAccount(t *testing.T) {
 	defer teardown()
 
 	account := appdomain.Account{
-		Id:          int64(1),
-		CustomerId:  int64(1),
-		Balance:     int64(20000000),
+		Id:           1,
+		CustomerId:   1,
+		Balance:      20000000,
 		CurrencyCode: "GBP",
 	}
-	mockAccountRepo.EXPECT().FindAccountById(int64(1)).Return(&account, nil)
+	mockAccountRepo.EXPECT().FindAccountById(1).Return(&account, nil)
 
-	a, _ := accountService.GetAccount(int64(1))
+	a, _ := accountService.GetAccount(1)
 
 	if a == nil {
 		t.Error("expected Account to be returned, got nil")

@@ -12,7 +12,7 @@ type CustomerRepositoryDb struct {
 	client *sqlx.DB
 }
 
-func (r CustomerRepositoryDb) FindByCustomerId(customerId int64) (*Customer, *errs.AppError) {
+func (r CustomerRepositoryDb) FindByCustomerId(customerId int) (*Customer, *errs.AppError) {
 	query := "select id, first_name, last_name, email, language from customers where id = ?"
 	var customer Customer
 	err := r.client.Get(&customer, query, customerId)

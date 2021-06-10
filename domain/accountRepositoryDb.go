@@ -15,7 +15,7 @@ type AccountRepositoryDb struct {
 	client *sqlx.DB
 }
 
-func (r AccountRepositoryDb) FindAllAccounts(customerId int64) ([]Account, *errs.AppError) {
+func (r AccountRepositoryDb) FindAllAccounts(customerId int) ([]Account, *errs.AppError) {
 	statement := "select id, customer_id, portfolio_id, currency_code, balance from accounts where customer_id = ?"
 	a := make([]Account, 0)
 	err := r.client.Select(&a, statement, customerId)
@@ -27,7 +27,7 @@ func (r AccountRepositoryDb) FindAllAccounts(customerId int64) ([]Account, *errs
 	return a, nil
 }
 
-func (r AccountRepositoryDb) FindAccountById(accountId int64) (*Account, *errs.AppError) {
+func (r AccountRepositoryDb) FindAccountById(accountId int) (*Account, *errs.AppError) {
 	statement := "select id, customer_id, portfolio_id, currency_code, balance from accounts where id = ?"
 	var a Account
 	err := r.client.Get(&a, statement, accountId)
@@ -59,13 +59,13 @@ func (r AccountRepositoryDb) SaveWithdrawalRequest(withdrawalRequest WithdrawalR
 		return nil, errs.NewUnexpectedError("Unexpected error from database")
 	}
 
-	withdrawalRequest.Id = id
+	withdrawalRequest.Id = int(id)
 	withdrawalRequest.CreatedAt = createdAt
 
 	return &withdrawalRequest, nil
 }
 
-func (r AccountRepositoryDb) FindOrderSheetById(orderSheetId int64) (*OrderSheet, *errs.AppError) {
+func (r AccountRepositoryDb) FindOrderSheetById(orderSheetId int) (*OrderSheet, *errs.AppError) {
 	statement := "select id, withdrawal_request_id, status, created_at from order_sheets where id = ?"
 	var orderSheet OrderSheet
 	err := r.client.Get(&orderSheet, statement, orderSheetId)
@@ -97,13 +97,13 @@ func (r AccountRepositoryDb) SaveOrderSheet(orderSheet OrderSheet) (*OrderSheet,
 		return nil, errs.NewUnexpectedError("Unexpected error from database")
 	}
 
-	orderSheet.Id = id
+	orderSheet.Id = int(id)
 	orderSheet.CreatedAt = createdAt
 
 	return &orderSheet, nil
 }
 
-func (r AccountRepositoryDb) FindPortfolioById(portfolioId int64) (*Portfolio, *errs.AppError) {
+func (r AccountRepositoryDb) FindPortfolioById(portfolioId int) (*Portfolio, *errs.AppError) {
 	statement := "select id, name from portfolios where id = ?"
 	var p Portfolio
 	err := r.client.Get(&p, statement, portfolioId)
@@ -145,7 +145,7 @@ func (r AccountRepositoryDb) SaveInstruction(instruction Instruction) (*Instruct
 		return nil, errs.NewUnexpectedError("Unexpected error from database")
 	}
 
-	instruction.Id = id
+	instruction.Id = int(id)
 	instruction.CreatedAt = createdAt
 	return &instruction, nil
 }
